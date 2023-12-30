@@ -26,13 +26,7 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
   ];
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <View
-        style={{
-          flex: 1,
-          marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-          paddingHorizontal: SIZES.md,
-        }}
-      >
+      <View style={styles.innerContainer}>
         <TouchableOpacity
           style={{ padding: 8, paddingStart: 0 }}
           onPress={() => navigation.goBack()}
@@ -49,9 +43,7 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
             <View
               style={{ flex: 1, marginTop: SIZES.xl, alignItems: "center" }}
             >
-              <Text style={{ ...TYPOGRAPHY.h1, fontSize: SIZES.lg }}>
-                Expertise
-              </Text>
+              <Text style={{ ...TYPOGRAPHY.h2 }}>Expertise</Text>
               <Text style={{ ...TYPOGRAPHY.p, marginVertical: SIZES.xxs }}>
                 Please select your field of expertise
               </Text>
@@ -61,6 +53,7 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
           )}
           style={{ width: "100%" }}
           data={skills}
+          keyExtractor={(item, index) => `${index}`}
           renderItem={({ item, index }) => {
             return (
               <Option
@@ -79,14 +72,14 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
           ListFooterComponent={() => (
             <TouchableOpacity
               activeOpacity={0.5}
-              disabled={selected.length > 1}
-              onPress={() => {}}
+              disabled={selected.length <= 1}
+              onPress={() => navigation.navigate("JobSeekerHomeScreen")}
               style={{
                 ...styles.btnContinue,
                 opacity: selected.length <= 1 ? 0.5 : 1,
               }}
             >
-              <Text style={{ ...TYPOGRAPHY.h2, color: COLORS.white }}>
+              <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
                 Continue
               </Text>
             </TouchableOpacity>
@@ -122,7 +115,7 @@ const Option: React.FC<OptionProps> = ({ title, isSelected, onPress }) => {
       >
         <MaterialCommunityIcons name="check" size={14} color="white" />
       </View>
-      <Text style={{ ...TYPOGRAPHY.h2, marginStart: SIZES.xxs }}>{title}</Text>
+      <Text style={{ ...TYPOGRAPHY.h5, marginStart: SIZES.xs }}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -130,6 +123,11 @@ const Option: React.FC<OptionProps> = ({ title, isSelected, onPress }) => {
 export default ExpertiseSelectionScreen;
 
 const styles = StyleSheet.create({
+  innerContainer: {
+    flex: 1,
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingHorizontal: SIZES.md,
+  },
   line: {
     height: 1,
     width: "100%",

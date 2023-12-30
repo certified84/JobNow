@@ -8,7 +8,7 @@ export const COLORS = {
   yellow: '#F5C51B',
   gold: '#FFA901',
 
-  primary: '#AE0057',
+  primary: '#3C8AFF',
   primaryLight: '#F9BBE7',
   primaryDark: '#650032',
 
@@ -33,13 +33,31 @@ export const SIZES = {
 export const TYPOGRAPHY = StyleSheet.create({
   h1: {
     color: COLORS.black,
-    fontFamily: 'outfit_bold',
-    fontWeight: '700',
-    fontSize: SIZES.md,
+    fontFamily: 'outfit_extra_bold',
+    fontWeight: '900',
+    fontSize: SIZES.xl,
   },
   h2: {
     color: COLORS.black,
+    fontFamily: 'outfit_bold',
+    fontWeight: '700',
+    fontSize: SIZES.lg,
+  },
+  h3: {
+    color: COLORS.black,
     fontFamily: 'outfit_semi_bold',
+    fontWeight: '600',
+    fontSize: SIZES.lg - 2,
+  },
+  h4: {
+    color: COLORS.black,
+    fontFamily: 'outfit_medium',
+    fontWeight: '500',
+    fontSize: SIZES.md,
+  },
+  h5: {
+    color: COLORS.black,
+    fontFamily: 'outfit_regular',
     fontWeight: '400',
     fontSize: SIZES.sm,
   },

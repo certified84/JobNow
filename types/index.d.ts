@@ -1,13 +1,10 @@
-export type StackParamList = {
-  ExpertiseSelectionScreen: {};
-};
-
 export type StackNavigation = StackNavigationProp<StackParamList>;
 
 import { RouteProp, NavigationProp } from '@react-navigation/native';
 
 type StackParamList = {
-  ExpertiseSelectionScreen: undefined; // Add other screens here
+  ExpertiseSelectionScreen: {};
+  HomeScreen: {};
 };
 
 type ScreenRouteProp = RouteProp<StackParamList, 'ExpertiseSelectionScreen'>;

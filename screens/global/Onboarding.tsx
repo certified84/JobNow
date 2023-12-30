@@ -46,7 +46,7 @@ export default function OnboardingScreen() {
         }}
         style={{ ...styles.btnContinue, opacity: selected === -1 ? 0.5 : 1 }}
       >
-        <Text style={{ ...TYPOGRAPHY.h2, color: COLORS.white }}>Continue</Text>
+        <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: SIZES.md,
   },
-  title: { ...TYPOGRAPHY.h1, fontSize: SIZES.xl, margin: SIZES.xxs },
+  title: { ...TYPOGRAPHY.h1, margin: SIZES.xxs },
   description: { ...TYPOGRAPHY.p, fontSize: SIZES.sm, textAlign: "center" },
   line: {
     height: 1,
@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   optionTitle: {
-    ...TYPOGRAPHY.h1,
-    fontSize: SIZES.md,
+    ...TYPOGRAPHY.h3,
     marginVertical: SIZES.xxs,
   },
   btnContinue: {
