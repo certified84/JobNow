@@ -42,6 +42,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
           </View>
           <TouchableOpacity
             activeOpacity={0.6}
+            onPress={() => navigation.navigate("NotificationsScreen")}
             style={styles.notificationIconContainer}
           >
             <SimpleLineIcons size={20} name="bell" />
@@ -178,13 +179,13 @@ const JobComponent: React.FC<JobProps> = ({ job, width }) => {
           )}
         </View>
 
-        <TouchableOpacity activeOpacity={0.5} style={{ padding: 4 }}>
+        {/* <TouchableOpacity activeOpacity={0.5} style={{ padding: 4 }}> */}
           <MaterialCommunityIcons
             name="bookmark-outline"
             size={30}
             color={COLORS.primary}
           />
-        </TouchableOpacity>
+        {/* </TouchableOpacity> */}
       </View>
 
       <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>

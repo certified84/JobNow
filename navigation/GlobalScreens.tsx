@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
-import { OnboardingScreen } from "../screens";
+import { NotificationsScreen, OnboardingScreen } from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -13,6 +13,13 @@ const GlobalScreens = () => {
         options={{
           headerShown: false,
           gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="NotificationsScreen"
+        component={NotificationsScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Group>

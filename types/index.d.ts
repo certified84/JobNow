@@ -5,6 +5,7 @@ import { RouteProp, NavigationProp } from '@react-navigation/native';
 type StackParamList = {
   ExpertiseSelectionScreen: {};
   HomeScreen: {};
+  NotificationsScreen: {};
 };
 
 type ScreenRouteProp = RouteProp<StackParamList, 'ExpertiseSelectionScreen'>;
