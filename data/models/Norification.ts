@@ -1,24 +1,26 @@
+type NotificationType =
+  | "upload"
+  | "verification"
+  | "job"
+  | "warning"
+  | "password"
+  | "security"
+  | "setup";
+
 export type Notification = {
   id: string;
   title: string;
-  pay: string,
-  type: string;
-  locationType: string,
-  location: string,
-  company: string,
-  companyLogo?: string | null,
-  description: string,
-  requirements: string[]
+  time: string;
+  description: string;
+  read: boolean;
+  type: NotificationType; // upload, verification, job, warning, password, security, setup
 };
 
 export const defaultNotification: Notification = {
-    id: "",
-    title: "",
-    pay: "",
-    type: "",
-    locationType: "",
-    location: "",
-    company: "",
-    description: "",
-    requirements: [""]
+  id: "",
+  title: "",
+  description: "",
+  time: "",
+  read: false,
+  type: "upload",
 };

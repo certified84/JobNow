@@ -1,4 +1,5 @@
 import { Job } from "./models/Job";
+import { Notification } from "./models/Norification";
 
 export const jobs: Job[] = [
   {
@@ -189,5 +190,75 @@ export const jobs: Job[] = [
       "Ability to work independently and as part of a team",
       "Passion for design and a commitment to creating user-centered products",
     ],
+  },
+];
+
+export const notifications: Notification[] = [
+  {
+    id: "1",
+    title: "Resume uploaded",
+    description: "Your resume has been successfully uploaded",
+    time: "08:30 AM",
+    type: "upload",
+    read: false,
+  },
+  {
+    id: "2",
+    title: "Profile Verified",
+    description: "Your profile has been successfully verified",
+    time: "08:45 AM",
+    type: "verification",
+    read: true,
+  },
+  {
+    id: "3",
+    title: "Job status",
+    description:
+      "Your application to the Senior Product Designer role at Amazon was viewed",
+    time: "09:00 AM",
+    type: "job",
+    read: true,
+  },
+  {
+    id: "4",
+    title: "Profile Incomplete",
+    description:
+      "You have an incomplete profile. Kindly update your profile to get the best out of JobNow.",
+    time: "01:45 PM",
+    type: "warning",
+    read: true,
+  },
+  {
+    id: "5",
+    title: "Fingerprint Added",
+    description: "Your fingerprint security has been successfully updated",
+    time: "02:30 PM",
+    type: "security",
+    read: false,
+  },
+  {
+    id: "6",
+    title: "Password Updated",
+    description: "Your password was successfully updated",
+    time: "03:45 PM",
+    type: "password",
+    read: true,
+  },
+  {
+    id: "7",
+    title: "Password Updated",
+    description: "Your password wass successfully updated",
+    time: "09:00 PM",
+    type: "password",
+    read: false,
+  },
+  {
+    id: "8",
+    title: "Account Setup",
+    description:
+      "Your JobNow account was successfully setup. Kindly update your profile to get the best out of JobNow",
+    time: "01:45 AM",
+    type: "setup",
+    read: true,
   },
 ];
