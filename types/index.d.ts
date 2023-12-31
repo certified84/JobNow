@@ -14,6 +14,12 @@ type StackParamList = {
     bookmarked: boolean;
     showBookmark: boolean;
   };
+  JobApplicationScreen: {
+    job: Job;
+    title: string;
+    bookmarked: boolean;
+    showBookmark: boolean;
+  };
 };
 
 type ScreenRouteProp = RouteProp<StackParamList>;

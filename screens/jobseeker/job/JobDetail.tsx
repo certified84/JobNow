@@ -33,13 +33,14 @@ type Props = {
 const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
   const job = route?.params.job!;
-  const [bookmarked, setBookmarked] = useState(route!.params.bookmarked);
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "description", title: "Description" },
-    { key: "requirements", title: "Requirements" },
-  ]);
-
+  const [values, setValues] = useState({
+    bookmarked: route!.params.bookmarked,
+    index: 0,
+    routes: [
+      { key: "description", title: "Description" },
+      { key: "requirements", title: "Requirements" },
+    ],
+  });
   const renderScene = SceneMap({
     description: () => <DescriptionTab job={job} />,
     requirements: () => <RequirementsTab job={job} />,
@@ -51,83 +52,97 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           title={route!.params.title}
           navigation={navigation}
           showBookmark={route!.params.showBookmark}
-          bookmarked={bookmarked}
-          onBookmarkPress={() => setBookmarked(!bookmarked)}
+          bookmarked={values.bookmarked}
+          onBookmarkPress={() =>
+            setValues({ ...values, bookmarked: !values.bookmarked })
+          }
         />
         {/* <ScrollView style={{ flex: 1 }}> */}
-          <View style={styles.jobContainer}>
-            <View style={styles.companyLogoContainer}>
-              {job.companyLogo && (
-                <Image
-                  source={{ uri: job.companyLogo }}
-                  style={{ width: 24, height: 24 }}
-                />
-              )}
-              {!job.companyLogo && (
-                <MaterialCommunityIcons
-                  name="briefcase"
-                  size={24}
-                  color={COLORS.primary}
-                />
-              )}
-            </View>
-
-            <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
-              {job.title}
-            </Text>
-
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ ...TYPOGRAPHY.p }}>
-                {`${job.company}   \u2022   `}{" "}
-              </Text>
-              <View style={styles.jobTypeContainer}>
-                <Text
-                  style={{
-                    ...TYPOGRAPHY.p,
-                    color: COLORS.primary,
-                  }}
-                >
-                  {job.type}
-                </Text>
-              </View>
-              <View style={styles.jobTypeContainer}>
-                <Text
-                  style={{
-                    ...TYPOGRAPHY.p,
-                    color: COLORS.primary,
-                  }}
-                >
-                  {job.locationType}
-                </Text>
-              </View>
-            </View>
-
-            <View style={{ ...styles.line, width: "100%" }} />
-
-            <Text style={styles.jobLocation}>{job.location}</Text>
-            <Text style={styles.pay}>{job.pay}</Text>
+        <View style={styles.jobContainer}>
+          <View style={styles.companyLogoContainer}>
+            {job.companyLogo && (
+              <Image
+                source={{ uri: job.companyLogo }}
+                style={{ width: 24, height: 24 }}
+              />
+            )}
+            {!job.companyLogo && (
+              <MaterialCommunityIcons
+                name="briefcase"
+                size={24}
+                color={COLORS.primary}
+              />
+            )}
           </View>
 
-          <View style={{ ...styles.line, margin: SIZES.md }} />
+          <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
+            {job.title}
+          </Text>
 
-          <TabView
-            renderTabBar={() => <RenderTab index={index} setIndex={setIndex} />}
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: width, height: height }}
-            style={{ flex: 1, height: 'auto' }}
-          />
-
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => {}}
-            style={styles.btnContinue}
-          >
-            <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
-              Apply Now
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ ...TYPOGRAPHY.p }}>
+              {`${job.company}   \u2022   `}{" "}
             </Text>
-          </TouchableOpacity>
+            <View style={styles.jobTypeContainer}>
+              <Text
+                style={{
+                  ...TYPOGRAPHY.p,
+                  color: COLORS.primary,
+                }}
+              >
+                {job.type}
+              </Text>
+            </View>
+            <View style={styles.jobTypeContainer}>
+              <Text
+                style={{
+                  ...TYPOGRAPHY.p,
+                  color: COLORS.primary,
+                }}
+              >
+                {job.locationType}
+              </Text>
+            </View>
+          </View>
+
+          <View style={{ ...styles.line, width: "100%" }} />
+
+          <Text style={styles.jobLocation}>{job.location}</Text>
+          <Text style={styles.pay}>{job.pay}</Text>
+        </View>
+
+        <View style={{ ...styles.line, margin: SIZES.md }} />
+
+        <TabView
+          renderTabBar={() => (
+            <RenderTab
+              index={values.index}
+              setIndex={(index) => setValues({ ...values, index: index })}
+            />
+          )}
+          navigationState={{ index: values.index, routes: values.routes }}
+          renderScene={renderScene}
+          onIndexChange={(index) => setValues({ ...values, index: index })}
+          initialLayout={{ width: width, height: height }}
+          style={{ flex: 1, height: "auto" }}
+        />
+
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() =>
+            navigation?.navigate("JobApplicationScreen", {
+              job: job,
+              title: "Apply to Job",
+              showBookmark: false,
+              bookmarked: false,
+            })
+          }
+          style={styles.btnContinue}
+        >
+          <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
+            Apply Now
+          </Text>
+        </TouchableOpacity>
         {/* </ScrollView> */}
       </View>
     </SafeAreaView>
@@ -177,7 +192,7 @@ const styles = StyleSheet.create({
   },
   jobLocation: { ...TYPOGRAPHY.h3, color: "#ADADAF", fontSize: SIZES.sm },
   btnContinue: {
-    marginBottom: SIZES.xl,
+    marginBottom: SIZES.xxs,
     marginHorizontal: SIZES.md,
     // marginTop: 80,
     padding: SIZES.sm,
