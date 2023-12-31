@@ -14,26 +14,28 @@ import {
 } from "react-native";
 import { Props } from "../../types";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../theme";
-import { Avatar, TextInput } from "react-native-paper";
-import {
-  MaterialIcons,
-  MaterialCommunityIcons,
-  SimpleLineIcons,
-  Ionicons,
-} from "@expo/vector-icons";
-import { Filter } from "../../assets/svg/Home";
-import { Job } from "../../data/models/Job";
+import { Avatar } from "react-native-paper";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { jobs } from "../../data/defaultData";
+import Search from "../../components/Search";
+import { useState } from "react";
+import JobComponent from "../../components/JobComponent";
 
 const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
+  const [searchText, setSearchText] = useState("");
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={styles.innerContainer}>
         <View style={styles.nameContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity activeOpacity={0.6}>
-              <Avatar.Image source={{ uri: "" }} size={50} />
+              <Avatar.Image
+                source={{
+                  uri: "https://source.unsplash.com/random/?computer,developer",
+                }}
+                size={50}
+              />
             </TouchableOpacity>
             <View style={{ marginStart: SIZES.sm }}>
               <Text style={{ ...TYPOGRAPHY.h5 }}>Hello,</Text>
@@ -64,48 +66,25 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
               Find your dream job with us, on JobNow.
             </Text>
 
-            <TextInput
-              placeholder={"Search for a job or skill..."}
-              theme={{ roundness: SIZES.xs }}
-              left={
-                <TextInput.Icon
-                  icon={() => (
-                    <Ionicons
-                      name="search-outline"
-                      size={SIZES.md}
-                      color={"black"}
-                    />
-                  )}
-                  color={COLORS.primary}
-                />
-              }
-              right={
-                <TextInput.Icon
-                  icon={() => (
-                    <TouchableOpacity activeOpacity={0.5}>
-                      <Filter />
-                    </TouchableOpacity>
-                  )}
-                  color={COLORS.primary}
-                />
-              }
-              style={{
-                backgroundColor: "white",
-                color: COLORS.primary,
-                marginTop: SIZES.xl,
-              }}
-              mode="outlined"
-              outlineColor="transparent"
-              activeOutlineColor="transparent"
-              placeholderTextColor={"#ADADAF"}
-              selectionColor={COLORS.black}
-              onChangeText={(text) => {}}
+            <Search
+              text={searchText}
+              onChangeText={setSearchText}
+              placeHolder="Search for a job or skill..."
             />
           </ImageBackground>
 
           <View style={styles.moreContainer}>
             <Text style={{ ...TYPOGRAPHY.h3 }}>Suggested Jobs</Text>
-            <TouchableOpacity style={{ padding: 4 }}>
+            <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={() =>
+                navigation.navigate("JobsScreen", {
+                  title: "Suggested Jobs",
+                  bookmarked: false,
+                  showBookmark: false,
+                })
+              }
+            >
               <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.primary }}>
                 See more
               </Text>
@@ -118,14 +97,23 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent job={item} width={width * 0.7} />
+              <JobComponent job={item} width={width * 0.7} horizontal navigation={navigation} />
             )}
             keyExtractor={(item) => item.id}
           />
 
           <View style={styles.moreContainer}>
             <Text style={{ ...TYPOGRAPHY.h3 }}>Top Jobs</Text>
-            <TouchableOpacity style={{ padding: 4 }}>
+            <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={() =>
+                navigation.navigate("JobsScreen", {
+                  title: "Top Jobs",
+                  bookmarked: false,
+                  showBookmark: false,
+                })
+              }
+            >
               <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.primary }}>
                 See more
               </Text>
@@ -138,7 +126,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent job={item} width={width * 0.7} />
+              <JobComponent job={item} width={width * 0.7} horizontal navigation={navigation}/>
             )}
             keyExtractor={(item) => item.id}
           />
@@ -150,70 +138,6 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
 };
 
 export default JobSeekerHomeScreen;
-
-interface JobProps {
-  job: Job;
-  width: number;
-}
-
-const JobComponent: React.FC<JobProps> = ({ job, width }) => {
-  return (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      style={{ ...styles.jobContainer, width: width }}
-    >
-      <View style={styles.logoBookmarkContainer}>
-        <View style={styles.companyLogoContainer}>
-          {job.companyLogo && (
-            <Image
-              source={{ uri: job.companyLogo }}
-              style={{ width: 24, height: 24 }}
-            />
-          )}
-          {!job.companyLogo && (
-            <MaterialCommunityIcons
-              name="briefcase"
-              size={24}
-              color={COLORS.primary}
-            />
-          )}
-        </View>
-
-        {/* <TouchableOpacity activeOpacity={0.5} style={{ padding: 4 }}> */}
-          <MaterialCommunityIcons
-            name="bookmark-outline"
-            size={30}
-            color={COLORS.primary}
-          />
-        {/* </TouchableOpacity> */}
-      </View>
-
-      <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
-        {job.title}
-      </Text>
-
-      <Text style={{ ...TYPOGRAPHY.p }}>
-        {`${job.company} \u2022 `}{" "}
-        <Text style={{ color: COLORS.primary }}>{job.pay}</Text>
-      </Text>
-
-      <View style={styles.line} />
-
-      <Text style={{ ...TYPOGRAPHY.h4, fontSize: SIZES.sm }}>
-        {job.location}
-      </Text>
-
-      <View style={{ flexDirection: "row", marginTop: SIZES.sm }}>
-        <View style={styles.jobTypeContainer}>
-          <Text style={{ ...TYPOGRAPHY.p }}>{job.type}</Text>
-        </View>
-        <View style={styles.jobTypeContainer}>
-          <Text style={{ ...TYPOGRAPHY.p }}>{job.locationType}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
 
 const styles = StyleSheet.create({
   innerContainer: {
@@ -261,31 +185,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     margin: SIZES.md,
     alignItems: "center",
-  },
-  jobContainer: {
-    borderRadius: SIZES.xs,
-    borderWidth: 2,
-    borderColor: "#CACACA",
-    padding: SIZES.sm,
-    marginEnd: SIZES.md,
-  },
-  companyLogoContainer: {
-    padding: SIZES.xs,
-    borderRadius: SIZES.xxs,
-    borderWidth: 2,
-    borderColor: "#CACACA",
-  },
-  logoBookmarkContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  jobTypeContainer: {
-    borderWidth: 1,
-    borderColor: "#CACACA",
-    padding: 4,
-    paddingHorizontal: SIZES.xs,
-    borderRadius: SIZES.xxs,
-    marginEnd: SIZES.sm,
   },
 });

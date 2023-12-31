@@ -8,8 +8,8 @@ export const COLORS = {
   yellow: '#F5C51B',
   gold: '#FFA901',
 
-  primary: '#3C8AFF',
-  primaryLight: '#F9BBE7',
+  primary: "#1472FF", //'#3C8AFF',
+  primaryLight: '#3C8AFF',
   primaryDark: '#650032',
 
   secondary: '#13005C',

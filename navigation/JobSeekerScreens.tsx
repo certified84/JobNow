@@ -1,6 +1,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
-import { ExpertiseSelectionScreen, JobSeekerHomeScreen, OnboardingScreen } from "../screens";
+import {
+  ExpertiseSelectionScreen,
+  JobDetailScreen,
+  JobSeekerHomeScreen,
+  JobsScreen,
+  OnboardingScreen,
+} from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -17,6 +23,20 @@ const JobSeekerScreens = () => {
       <Stack.Screen
         name="JobSeekerHomeScreen"
         component={JobSeekerHomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobsScreen"
+        component={JobsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobDetailScreen"
+        component={JobDetailScreen}
         options={{
           headerShown: false,
         }}

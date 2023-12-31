@@ -8,13 +8,23 @@ import {
 import { COLORS, SIZES, TYPOGRAPHY } from "../theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StackNavigation } from "../types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface HeaderProps {
   title: string;
   navigation: StackNavigation;
+  showBookmark?: boolean;
+  bookmarked?: boolean;
+  onBookmarkPress?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, navigation }) => (
+const Header: React.FC<HeaderProps> = ({
+  title,
+  navigation,
+  showBookmark,
+  bookmarked,
+  onBookmarkPress,
+}) => (
   <View>
     <View style={styles.innerContainer}>
       <TouchableOpacity
@@ -27,9 +37,20 @@ const Header: React.FC<HeaderProps> = ({ title, navigation }) => (
           color="black"
         />
       </TouchableOpacity>
-      <View style={{ flex: 1, alignItems: "center", marginEnd: 24 }}>
-        <Text style={{ ...TYPOGRAPHY.h3 }}>{title}</Text>
-      </View>
+
+      <Text style={{ ...TYPOGRAPHY.h3 }}>{title}</Text>
+
+      <TouchableOpacity
+        disabled={!showBookmark}
+        onPress={onBookmarkPress}
+        style={{ opacity: showBookmark ? 1 : 0, padding: 8, paddingEnd: 0 }}
+      >
+        <MaterialCommunityIcons
+          name={bookmarked ? "bookmark" : "bookmark-outline"}
+          size={24}
+          color={bookmarked ? COLORS.primary : COLORS.black}
+        />
+      </TouchableOpacity>
     </View>
     <View style={styles.line} />
   </View>
@@ -42,6 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: SIZES.md,
+    justifyContent: "space-between",
   },
   line: {
     height: 1,

@@ -1,0 +1,77 @@
+import {
+  FlatList,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import { COLORS, SIZES } from "../../../theme";
+import Header from "../../../components/Header";
+import { StackParamList } from "../../../types";
+import Search from "../../../components/Search";
+import { useState } from "react";
+import { jobs } from "../../../data/defaultData";
+import JobComponent from "../../../components/JobComponent";
+import { RouteProp, NavigationProp } from "@react-navigation/native";
+
+type ScreenRouteProp = RouteProp<StackParamList, "JobsScreen">;
+type NavProp = NavigationProp<StackParamList, "JobsScreen">;
+
+type Props = {
+  route?: ScreenRouteProp;
+  navigation?: NavProp;
+};
+
+const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
+  const { width } = useWindowDimensions();
+  const [searchText, setSearchText] = useState("");
+  const [bookmarked, setBookmarked] = useState(route!.params.bookmarked);
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <View style={styles.innerContainer}>
+        <Header
+          title={route!.params.title}
+          navigation={navigation}
+          showBookmark={route!.params.showBookmark}
+          bookmarked={bookmarked}
+          onBookmarkPress={() => setBookmarked(!bookmarked)}
+        />
+
+        <FlatList
+          ListHeaderComponent={() => (
+            <Search
+              text={searchText}
+              onChangeText={setSearchText}
+              placeHolder="Search..."
+              style={{ marginTop: 0 }}
+              borderColor={"#F0F0F0"}
+              activeBorderColor={COLORS.primary}
+            />
+          )}
+          // showsVerticalScrollIndicator={false}
+          data={jobs}
+          style={{ marginHorizontal: SIZES.md }}
+          renderItem={({ item, index }) => (
+            <JobComponent job={item} width={width - SIZES.md * 2} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item.id}
+          ListFooterComponent={() => <View style={{ height: SIZES.xl }} />}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default JobsScreen;
+
+const styles = StyleSheet.create({
+  innerContainer: {
+    flex: 1,
+    marginTop:
+      Platform.OS === "android"
+        ? StatusBar.currentHeight! + SIZES.sm
+        : SIZES.sm,
+  },
+});
