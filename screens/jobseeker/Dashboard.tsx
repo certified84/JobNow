@@ -14,6 +14,7 @@ import {
   Person,
 } from "../../assets/svg/Navigation";
 import JobApplicationsScreen from "./job/JobApplications";
+import JobSeekerProfileScreen from "./ProfileScreen";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -119,8 +120,8 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           }}   */}
         {/* /> */}
         <Tab.Screen
-          name="ProfileScreen"
-          component={JobSeekerHomeScreen}
+          name="JobSeekerProfileScreen"
+          component={JobSeekerProfileScreen}
           options={{
             tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabBarIcon}>
