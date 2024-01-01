@@ -20,6 +20,7 @@ type StackParamList = {
     bookmarked: boolean;
     showBookmark: boolean;
   };
+  JobSeekerDashboard: {}
 };
 
 type ScreenRouteProp = RouteProp<StackParamList>;

@@ -23,6 +23,7 @@ import {
   Mail,
   User,
 } from "../../../assets/svg/Job";
+import { is_email } from "../../../constants";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationScreen">;
@@ -43,6 +44,13 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
     resume: false,
     resumeUploaded: false,
   });
+
+  const disabled =
+    values.name.length <= 0 ||
+    values.email.length <= 0 ||
+    !is_email(values.email) ||
+    values.porfolioLink.length <= 0 ||
+    values.coverLetter.length <= 0;
 
   useEffect(() => {
     if (values.resume) {
@@ -99,24 +107,16 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
           <Text style={{ ...TYPOGRAPHY.h4 }}>Upload Resume</Text>
 
           {values.resumeUploaded ? (
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF3F3",
-                padding: SIZES.md,
-                justifyContent: "space-between",
-                marginVertical: SIZES.xs,
-                borderRadius: SIZES.sm,
-                alignItems: "center",
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: 'center' }}>
+            <View style={styles.resumeUploadedContainer}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <FileUploaded />
                 <View style={{ marginStart: SIZES.sm }}>
                   <Text style={{ ...TYPOGRAPHY.h5 }}>
                     CV-Bolarinwa_Daniel.pdf
                   </Text>
-                  <Text style={{ ...TYPOGRAPHY.p, fontSize: SIZES.xs }}>128kb</Text>
+                  <Text style={{ ...TYPOGRAPHY.p, fontSize: SIZES.xs }}>
+                    128kb
+                  </Text>
                 </View>
               </View>
               <TouchableOpacity
@@ -190,7 +190,8 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => {}}
-            style={styles.btnContinue}
+            disabled={disabled}
+            style={{ ...styles.btnContinue, opacity: disabled ? 0.5 : 1 }}
           >
             <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
               Submit
@@ -239,5 +240,14 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.p,
     marginTop: SIZES.xxs,
     color: COLORS.primary,
+  },
+  resumeUploadedContainer: {
+    flexDirection: "row",
+    backgroundColor: "#FFF3F3",
+    padding: SIZES.md,
+    justifyContent: "space-between",
+    marginVertical: SIZES.xs,
+    borderRadius: SIZES.sm,
+    alignItems: "center",
   },
 });

@@ -73,7 +73,7 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
             <TouchableOpacity
               activeOpacity={0.5}
               disabled={selected.length <= 1}
-              onPress={() => navigation.navigate("JobSeekerHomeScreen")}
+              onPress={() => navigation.navigate("JobSeekerDashboard")}
               style={{
                 ...styles.btnContinue,
                 opacity: selected.length <= 1 ? 0.5 : 1,

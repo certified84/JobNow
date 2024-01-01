@@ -130,7 +130,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             )}
             keyExtractor={(item) => item.id}
           />
-          <View style={{ height: SIZES.md }} />
+          <View style={{ height: 90 }} />
         </ScrollView>
       </View>
     </SafeAreaView>

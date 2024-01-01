@@ -4,6 +4,7 @@ import {
   ExpertiseSelectionScreen,
   JobApplicationScreen,
   JobDetailScreen,
+  JobSeekerDashboard,
   JobSeekerHomeScreen,
   JobsScreen,
   OnboardingScreen,
@@ -17,6 +18,13 @@ const JobSeekerScreens = () => {
       <Stack.Screen
         name="ExpertiseSelectionScreen"
         component={ExpertiseSelectionScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobSeekerDashboard"
+        component={JobSeekerDashboard}
         options={{
           headerShown: false,
         }}
