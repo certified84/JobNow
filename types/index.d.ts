@@ -7,7 +7,12 @@ type StackParamList = {
   ExpertiseSelectionScreen: {};
   HomeScreen: {};
   NotificationsScreen: {};
-  JobsScreen: { title: string; bookmarked: boolean; showBookmark: boolean };
+  JobsScreen: {
+    title: string;
+    bookmarked: boolean;
+    showBookmark: boolean;
+    showBack: boolean;
+  };
   JobDetailScreen: {
     job: Job;
     title: string;
@@ -20,7 +25,14 @@ type StackParamList = {
     bookmarked: boolean;
     showBookmark: boolean;
   };
-  JobSeekerDashboard: {}
+  JobSeekerDashboard: {};
+  JobApplicationsScreen: {
+    title: string;
+  };
+  JobApplicationDetailScreen: {
+    job: Job;
+    title: string;
+  };
 };
 
 type ScreenRouteProp = RouteProp<StackParamList>;

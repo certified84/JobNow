@@ -14,6 +14,7 @@ interface HeaderProps {
   title: string;
   navigation: StackNavigation;
   showBookmark?: boolean;
+  showBack?: boolean;
   bookmarked?: boolean;
   onBookmarkPress?: () => void;
 }
@@ -22,14 +23,16 @@ const Header: React.FC<HeaderProps> = ({
   title,
   navigation,
   showBookmark,
+  showBack = true,
   bookmarked,
   onBookmarkPress,
 }) => (
   <View>
     <View style={styles.innerContainer}>
       <TouchableOpacity
-        style={{ padding: 8, paddingStart: 0 }}
+        style={{ padding: 8, paddingStart: 0, opacity: showBack ? 1 : 0 }}
         onPress={() => navigation.goBack()}
+        disabled={!showBack}
       >
         <MaterialIcons
           name={Platform.OS === "android" ? "arrow-back" : "arrow-back-ios"}

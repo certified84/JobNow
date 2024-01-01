@@ -3,6 +3,7 @@ import { COLORS, SIZES, TYPOGRAPHY } from "../theme";
 import { Job } from "../data/models/Job";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackNavigation } from "../types";
+import { Briefcase } from "../assets/svg/Onboarding";
 
 interface JobProps {
   job: Job;
@@ -45,11 +46,7 @@ const JobComponent: React.FC<JobProps> = ({
             />
           )}
           {!job.companyLogo && (
-            <MaterialCommunityIcons
-              name="briefcase"
-              size={24}
-              color={COLORS.primary}
-            />
+            <Briefcase />
           )}
         </View>
 

@@ -2,7 +2,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
 import {
   ExpertiseSelectionScreen,
+  JobApplicationDetailScreen,
   JobApplicationScreen,
+  JobApplicationsScreen,
   JobDetailScreen,
   JobSeekerDashboard,
   JobSeekerHomeScreen,
@@ -53,6 +55,20 @@ const JobSeekerScreens = () => {
       <Stack.Screen
         name="JobApplicationScreen"
         component={JobApplicationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobApplicationsScreen"
+        component={JobApplicationsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobApplicationDetailScreen"
+        component={JobApplicationDetailScreen}
         options={{
           headerShown: false,
         }}

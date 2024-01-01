@@ -11,8 +11,9 @@ import {
   BriefcaseSelected,
   Briefcase,
   PersonSelected,
-  Person
+  Person,
 } from "../../assets/svg/Navigation";
+import JobApplicationsScreen from "./job/JobApplications";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -53,14 +54,19 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           }}
         />
         <Tab.Screen
-          name="JobStatusScreen"
-          component={JobSeekerHomeScreen}
+          name="JobApplicationsScreen"
+          component={JobApplicationsScreen}
+          initialParams={{
+            bookmark: false,
+            showBookmark: false,
+            showBack: false,
+          }}
           options={{
             tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabBarIcon}>
                 {focused ? <BriefcaseSelected /> : <Briefcase />}
                 <Text style={{ ...styles.tabBarLabel, color: color }}>
-                  Job Status
+                  Applications
                 </Text>
               </View>
             ),
@@ -73,6 +79,7 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
             title: "Bookmarks",
             bookmarked: false,
             showBookmark: false,
+            showBack: false,
           }}
           options={{
             tabBarIcon: ({ color, focused }) => (
@@ -117,12 +124,12 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           options={{
             tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabBarIcon}>
-              {focused ? <PersonSelected /> : <Person />}
-              <Text style={{ ...styles.tabBarLabel, color: color }}>
-                Profile
-              </Text>
-            </View>
-            )
+                {focused ? <PersonSelected /> : <Person />}
+                <Text style={{ ...styles.tabBarLabel, color: color }}>
+                  Profile
+                </Text>
+              </View>
+            ),
           }}
         />
       </Tab.Navigator>

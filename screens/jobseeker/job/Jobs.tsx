@@ -34,6 +34,7 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
         <Header
           title={route!.params.title}
           navigation={navigation}
+          showBack={route?.params.showBack}
           showBookmark={route!.params.showBookmark}
           bookmarked={bookmarked}
           onBookmarkPress={() => setBookmarked(!bookmarked)}

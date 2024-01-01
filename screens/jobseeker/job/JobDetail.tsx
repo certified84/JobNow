@@ -21,6 +21,8 @@ import { SceneMap, TabView } from "react-native-tab-view";
 import DescriptionTab from "./tabs/Description";
 import RequirementsTab from "./tabs/Requirements";
 import RenderTab from "./components/RenderTab";
+import { Briefcase } from "../../../assets/svg/Onboarding";
+import JobDetailComponent from "../../../components/JobDetailComponent";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobDetailScreen">;
 type NavProp = NavigationProp<StackParamList, "JobDetailScreen">;
@@ -58,58 +60,7 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           }
         />
         {/* <ScrollView style={{ flex: 1 }}> */}
-        <View style={styles.jobContainer}>
-          <View style={styles.companyLogoContainer}>
-            {job.companyLogo && (
-              <Image
-                source={{ uri: job.companyLogo }}
-                style={{ width: 24, height: 24 }}
-              />
-            )}
-            {!job.companyLogo && (
-              <MaterialCommunityIcons
-                name="briefcase"
-                size={24}
-                color={COLORS.primary}
-              />
-            )}
-          </View>
-
-          <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
-            {job.title}
-          </Text>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ ...TYPOGRAPHY.p }}>
-              {`${job.company}   \u2022   `}{" "}
-            </Text>
-            <View style={styles.jobTypeContainer}>
-              <Text
-                style={{
-                  ...TYPOGRAPHY.p,
-                  color: COLORS.primary,
-                }}
-              >
-                {job.type}
-              </Text>
-            </View>
-            <View style={styles.jobTypeContainer}>
-              <Text
-                style={{
-                  ...TYPOGRAPHY.p,
-                  color: COLORS.primary,
-                }}
-              >
-                {job.locationType}
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ ...styles.line, width: "100%" }} />
-
-          <Text style={styles.jobLocation}>{job.location}</Text>
-          <Text style={styles.pay}>{job.pay}</Text>
-        </View>
+        <JobDetailComponent job={job}/>
 
         <View style={{ ...styles.line, margin: SIZES.md }} />
 
@@ -159,38 +110,11 @@ const styles = StyleSheet.create({
         ? StatusBar.currentHeight! + SIZES.sm
         : SIZES.sm,
   },
-  jobContainer: {
-    borderRadius: SIZES.xs,
-    borderWidth: 2,
-    borderColor: "#CACACA",
-    padding: SIZES.md,
-    marginHorizontal: SIZES.md,
-    alignItems: "center",
-  },
-  companyLogoContainer: {
-    padding: SIZES.xs,
-    borderRadius: SIZES.xxs,
-    borderWidth: 2,
-    borderColor: "#CACACA",
-  },
-  jobTypeContainer: {
-    backgroundColor: "#DDEAFF",
-    padding: 4,
-    paddingHorizontal: SIZES.xs,
-    borderRadius: SIZES.xxs,
-    marginEnd: SIZES.sm,
-  },
   line: {
     height: 1,
     backgroundColor: COLORS.lightGray,
     marginVertical: SIZES.sm,
   },
-  pay: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.primary,
-    marginTop: SIZES.xxs,
-  },
-  jobLocation: { ...TYPOGRAPHY.h3, color: "#ADADAF", fontSize: SIZES.sm },
   btnContinue: {
     marginBottom: SIZES.xxs,
     marginHorizontal: SIZES.md,
