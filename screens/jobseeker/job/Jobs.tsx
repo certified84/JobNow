@@ -58,7 +58,7 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
             <JobComponent job={item} width={width - SIZES.md * 2} navigation={navigation} />
           )}
           keyExtractor={(item) => item.id}
-          ListFooterComponent={() => <View style={{ height: SIZES.xl }} />}
+          ListFooterComponent={() => <View style={{ height: 90 }} />}
         />
       </View>
     </SafeAreaView>

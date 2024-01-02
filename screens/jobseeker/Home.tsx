@@ -29,7 +29,10 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.innerContainer}>
         <View style={styles.nameContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity activeOpacity={0.6}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate("JobSeekerProfileScreen")}
+            >
               <Avatar.Image
                 source={{
                   uri: "https://source.unsplash.com/random/?computer,developer",
@@ -97,7 +100,12 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent job={item} width={width * 0.7} horizontal navigation={navigation} />
+              <JobComponent
+                job={item}
+                width={width * 0.7}
+                horizontal
+                navigation={navigation}
+              />
             )}
             keyExtractor={(item) => item.id}
           />
@@ -126,7 +134,12 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent job={item} width={width * 0.7} horizontal navigation={navigation}/>
+              <JobComponent
+                job={item}
+                width={width * 0.7}
+                horizontal
+                navigation={navigation}
+              />
             )}
             keyExtractor={(item) => item.id}
           />

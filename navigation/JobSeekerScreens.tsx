@@ -8,6 +8,7 @@ import {
   JobDetailScreen,
   JobSeekerDashboard,
   JobSeekerHomeScreen,
+  JobSeekerProfileScreen,
   JobsScreen,
   OnboardingScreen,
 } from "../screens";
@@ -29,6 +30,7 @@ const JobSeekerScreens = () => {
         component={JobSeekerDashboard}
         options={{
           headerShown: false,
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen
@@ -69,6 +71,13 @@ const JobSeekerScreens = () => {
       <Stack.Screen
         name="JobApplicationDetailScreen"
         component={JobApplicationDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobSeekerProfileScreen"
+        component={JobSeekerProfileScreen}
         options={{
           headerShown: false,
         }}

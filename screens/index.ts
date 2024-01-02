@@ -9,6 +9,7 @@ import JobApplicationScreen from "./jobseeker/job/JobApplication";
 import JobSeekerDashboard from "./jobseeker/Dashboard";
 import JobApplicationsScreen from "./jobseeker/job/JobApplications";
 import JobApplicationDetailScreen from "./jobseeker/job/JobApplicationDetail";
+import JobSeekerProfileScreen from "./jobseeker/ProfileScreen";
 
 export {
   OnboardingScreen,
@@ -21,4 +22,5 @@ export {
   JobSeekerDashboard,
   JobApplicationsScreen,
   JobApplicationDetailScreen,
+  JobSeekerProfileScreen,
 };

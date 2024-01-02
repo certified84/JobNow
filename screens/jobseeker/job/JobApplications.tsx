@@ -67,7 +67,7 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
             />
           )}
           keyExtractor={(item) => item.id}
-          ListFooterComponent={() => <View style={{ height: SIZES.xl }} />}
+          ListFooterComponent={() => <View style={{ height: 90 }} />}
         />
       </View>
     </SafeAreaView>
