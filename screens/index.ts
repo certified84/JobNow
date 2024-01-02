@@ -1,5 +1,10 @@
-import OnboardingScreen from "./global/Onboarding";
+import OnboardingScreen from "./global/onboarding/Onboarding";
+import OnboardingContinueScreen from "./global/onboarding/OnboardingContinue";
 import NotificationsScreen from "./global/Notification";
+
+import ForgotPasswordScreen from "./global/auth/ForgotPassword";
+import LoginScreen from "./global/auth/Login";
+import SignupScreen from "./global/auth/Signup";
 
 import ExpertiseSelectionScreen from "./jobseeker/ExpertiseSelection";
 import JobSeekerHomeScreen from "./jobseeker/Home";
@@ -13,9 +18,13 @@ import JobSeekerProfileScreen from "./jobseeker/ProfileScreen";
 
 export {
   OnboardingScreen,
+  OnboardingContinueScreen,
+  NotificationsScreen,
+  ForgotPasswordScreen,
+  LoginScreen,
+  SignupScreen,
   ExpertiseSelectionScreen,
   JobSeekerHomeScreen,
-  NotificationsScreen,
   JobsScreen,
   JobDetailScreen,
   JobApplicationScreen,

@@ -1,30 +1,29 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
-import { NotificationsScreen, OnboardingContinueScreen, OnboardingScreen } from "../screens";
+import { ForgotPasswordScreen, LoginScreen, SignupScreen } from "../screens";
 
 const Stack = createStackNavigator();
 
-const GlobalScreens = () => {
+const AuthScreens = () => {
   return (
     <Stack.Group>
       <Stack.Screen
-        name="OnboardingScreen"
-        component={OnboardingScreen}
-        options={{
-          headerShown: false,
-          gestureEnabled: false,
-        }}
-      />
-      <Stack.Screen
-        name="OnboardingContinueScreen"
-        component={OnboardingContinueScreen}
+        name="LoginScreen"
+        component={LoginScreen}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="NotificationsScreen"
-        component={NotificationsScreen}
+        name="SignupScreen"
+        component={SignupScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
         options={{
           headerShown: false,
         }}
@@ -33,4 +32,4 @@ const GlobalScreens = () => {
   );
 };
 
-export default GlobalScreens;
+export default AuthScreens;

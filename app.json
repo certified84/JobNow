@@ -4,19 +4,25 @@
     "slug": "JobNow",
     "version": "0.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/jobnow_splash.png",
+      "backgroundColor": "#ffffff",
+      "resizeMode": "cover"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.certified.jobnow"
+      "bundleIdentifier": "com.certified.jobnow",
+      "splash": {
+        "image": "./assets/jobnow_splash.png",
+        "backgroundColor": "#ffffff",
+        "tabletImage": "./assets/jobnow_splash.png",
+        "resizeMode": "cover"
+      }
     },
     "android": {
       "adaptiveIcon": {

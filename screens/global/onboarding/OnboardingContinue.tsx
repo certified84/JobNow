@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { COLORS, SIZES, TYPOGRAPHY } from "../../theme";
-import { Briefcase, User } from "../../assets/svg/Onboarding";
+import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
+import { Briefcase, User } from "../../../assets/svg/Onboarding";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigation } from "../../types";
+import { StackNavigation } from "../../../types";
 
-export default function OnboardingScreen() {
+export default function OnboardingContinueScreen() {
   const navigation = useNavigation<StackNavigation>();
   const [selected, setSelected] = useState(-1);
 
