@@ -4,6 +4,7 @@ import { Briefcase, User } from "../../../assets/svg/Onboarding";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../../../types";
+import { Toast, ALERT_TYPE, Dialog } from "react-native-alert-notification";
 
 export default function OnboardingContinueScreen() {
   const navigation = useNavigation<StackNavigation>();
@@ -42,7 +43,13 @@ export default function OnboardingContinueScreen() {
         activeOpacity={0.5}
         disabled={selected === -1}
         onPress={() => {
-          selected === 0 ? navigation.navigate("ExpertiseSelectionScreen") : {};
+          selected === 0
+            ? navigation.navigate("SignupScreen")
+            : Toast.show({
+                type: ALERT_TYPE.INFO,
+                title: "Coming soon",
+                textBody: "This feature isn't available yet",
+              });
         }}
         style={{ ...styles.btnContinue, opacity: selected === -1 ? 0.5 : 1 }}
       >
@@ -55,7 +62,7 @@ export default function OnboardingContinueScreen() {
 interface OptionProps {
   title: string;
   desc: string;
-  icon: React.ReactNode; // or whatever type your icon is
+  icon: React.ReactNode;
   isSelected: boolean;
   color: string;
   onPress?: () => void;
