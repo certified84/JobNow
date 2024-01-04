@@ -9,8 +9,9 @@ interface ButtonProps {
   textColor?: string;
   buttonColor?: string;
   buttonTitle?: string;
-  onPress?: () => void;
   style?: {};
+  disabled?: boolean;
+  onPress?: () => void;
 }
 
 export const AuthButton: React.FC<ButtonProps> = ({
@@ -51,9 +52,11 @@ export const ActionButton: React.FC<ButtonProps> = ({
   buttonTitle,
   buttonColor,
   textColor,
+  disabled,
 }) => {
   return (
     <TouchableOpacity
+    disabled={disabled}
       style={{ ...styles.actionBtn, ...style, backgroundColor: buttonColor }}
       activeOpacity={0.5}
       onPress={onPress}

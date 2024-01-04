@@ -15,10 +15,18 @@ import {
 } from "../../assets/svg/Navigation";
 import JobApplicationsScreen from "./job/JobApplications";
 import JobSeekerProfileScreen from "./ProfileScreen";
+import { useEffect } from "react";
 
 const Tab = createMaterialBottomTabNavigator();
 
 const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e: any) => {
+      e.preventDefault();
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <Tab.Navigator
@@ -30,7 +38,8 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           backgroundColor: COLORS.white,
           position: "absolute",
           elevation: 0,
-          //   height: "10%",
+            // height: "10%",
+            paddingBottom: 8
         }}
         screenListeners={{
           tabPress: (e) => {},
@@ -104,9 +113,6 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
         {/* <Text style={{ ...styles.tabBarLabel, color: color }}>
                     Messages
                   </Text>
-                  <View
-                    style={{ ...styles.indicator, backgroundColor: color }}
-                  />
                 </View>
               ) : (
                 <View style={styles.tabBarIcon}>
@@ -158,11 +164,5 @@ const styles = StyleSheet.create({
     fontSize: SIZES.xs,
     textAlign: "center",
     marginTop: SIZES.xxs / 2,
-  },
-  indicator: {
-    marginTop: SIZES.xxs,
-    borderRadius: SIZES.md,
-    height: 4,
-    width: 40,
   },
 });

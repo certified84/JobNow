@@ -11,10 +11,23 @@ import {
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../theme";
 import { Props } from "../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { User, defaultUser } from "../../data/models/User";
+import {
+  useCollection,
+  useDocument,
+  useDocumentOnce,
+} from "react-firebase-hooks/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+import { auth, firestore } from "../../firebase";
+import { Loader } from "../../components/Loader";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
-  const [selected, setSelected] = useState([-1]); // [0, 1, 2, 3, 4, 5, 6
+  const [values, setValues] = useState({
+    selected: [-1],
+    loading: false,
+  });
   const skills = [
     "Accountancy",
     "Aerospace Engineering",
@@ -24,10 +37,45 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
     "Journalism",
     "Nursing",
   ];
+
+  const user = auth.currentUser!;
+  const reference = doc(firestore, "users", user.uid);
+  const [snapshot, loading, error] = useDocument(reference);
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e: any) => {
+      e.preventDefault();
+    });
+  }, [navigation]);
+
+  async function updateUserProfile() {
+    setValues({ ...values, loading: true });
+    const userRef = doc(firestore, "users", user.uid);
+    await updateDoc(userRef, {
+      skills: skills.filter((_, index) => values.selected.includes(index)),
+    })
+      .then(() => {
+        setValues({ ...values, loading: false });
+        navigation.navigate("JobSeekerDashboard");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValues({ ...values, loading: false });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <Loader showLoader={values.loading || loading} />
       <View style={styles.innerContainer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{ padding: 8, paddingStart: 0 }}
           onPress={() => navigation.goBack()}
         >
@@ -36,7 +84,7 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
             size={24}
             color="black"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <FlatList
           ListHeaderComponent={() => (
@@ -58,12 +106,21 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
             return (
               <Option
                 title={item}
-                isSelected={selected.includes(index)}
+                isSelected={values.selected.includes(index)}
                 onPress={() => {
-                  if (selected.includes(index)) {
-                    setSelected(selected.filter((item) => item !== index));
+                  if (values.selected.includes(index)) {
+                    setValues({
+                      ...values,
+                      selected: values.selected.filter(
+                        (item) => item !== index
+                      ),
+                    });
                   } else {
-                    setSelected([...selected, index]);
+                    setValues({
+                      ...values,
+                      selected: [...values.selected, index],
+                    });
+                    // setSelected([...selected, index]);
                   }
                 }}
               />
@@ -72,11 +129,11 @@ const ExpertiseSelectionScreen: React.FC<Props> = ({ route, navigation }) => {
           ListFooterComponent={() => (
             <TouchableOpacity
               activeOpacity={0.5}
-              disabled={selected.length <= 1}
-              onPress={() => navigation.navigate("JobSeekerDashboard")}
+              disabled={values.selected.length <= 1}
+              onPress={updateUserProfile}
               style={{
                 ...styles.btnContinue,
-                opacity: selected.length <= 1 ? 0.5 : 1,
+                opacity: values.selected.length <= 1 ? 0.5 : 1,
               }}
             >
               <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>

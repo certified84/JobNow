@@ -14,23 +14,29 @@ import {
 } from "../../../components/Buttons";
 import { styles } from "./Login";
 import { useNavigation } from "@react-navigation/native";
-// import { Loader } from '../../../components/Loader';
 import { useEffect, useState } from "react";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
-// import { User as FirebaseUser, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
-// import { auth, firestore } from '../../../../firebase';
-// import { doc, setDoc } from 'firebase/firestore';
-// import { User, defaultUser } from '../../../data/model/User'
+import { Loader } from "../../../components/Loader";
+import {
+  User as FirebaseUser,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
+import { auth, firestore } from "../../../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { is_email } from "../../../constants";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { User, defaultUser } from "../../../data/models/User";
+import { Props } from "../../../types";
 
-const SignupScreen = () => {
-  const navigation = useNavigation();
+const SignupScreen: React.FC<Props> = ({route, navigation}) => {
   const { width } = useWindowDimensions();
 
   const [value, setValue] = useState({
     name: "",
     email: "",
     password: "",
-    message: "",
     loading: false,
     showSnackBar: false,
     success: false,
@@ -42,89 +48,103 @@ const SignupScreen = () => {
     password: false,
   });
 
-  useEffect(
-    () => setValue({ ...value, showSnackBar: value.message !== "" }),
-    [value.message]
-  );
+  const disabled =
+    value.name === "" || value.email === "" || value.password === "";
 
   async function signUp() {
-    if (value.name === "") {
-      setErrors({ ...errors, name: true });
-      return;
-    } else if (value.email === "") {
+    if (!is_email(value.email)) {
       setErrors({ ...errors, email: true });
-      return;
-    } else if (value.password === "") {
-      setErrors({ ...errors, password: true });
       return;
     }
 
     setValue({ ...value, loading: true });
-    // await createUserWithEmailAndPassword(auth, value.email, value.password)
-    // .then((userCredential) => {
-    //     const user = userCredential.user
-    //     uploadData(user)
-    // })
-    // .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.log(errorCode, errorMessage)
-    //     setValue({ ...value, message: "An error occurred. Please try again.", loading: false })
-    // })
+    await createUserWithEmailAndPassword(auth, value.email, value.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        uploadData(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValue({ ...value, loading: false });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
   }
 
-  // async function uploadData(user: FirebaseUser) {
-  //     const data: User = { ...defaultUser, uid: user.uid, name: value.name, email: value.email.toLowerCase() }
-  //     await setDoc(doc(firestore, "users", user.uid), data)
-  //     .then(() => {
-  //         updateUserProfile(user, value.name)
-  //     })
-  //     .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         console.log(errorCode, errorMessage)
-  //         setValue({ ...value, message: "An error occurred. Please try again.", loading: false })
-  //     })
-  // }
+  async function uploadData(user: FirebaseUser) {
+    const data: User = {
+      ...defaultUser,
+      uid: user.uid,
+      name: value.name,
+      email: value.email.toLowerCase(),
+    };
+    await setDoc(doc(firestore, "users", user.uid), data)
+      .then(() => {
+        updateUserProfile(user, value.name);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValue({
+          ...value,
+          loading: false,
+        });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
+  }
 
-  // async function updateUserProfile(user: FirebaseUser, displayName? : string | null) {
-  //     await updateProfile(user, {displayName: displayName})
-  //     .then(() => {
-  //         sendEmailVerification(user)
-  //         setValue({ ...value, message: "A verification email has been sent to your email address.", loading: false, success: true })
-  //         auth.signOut()
-  //     })
-  //     .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         console.log(errorCode, errorMessage)
-  //         setValue({ ...value, message: "An error occurred. Please try again.", loading: false })
-  //     })
-  // }
+  async function updateUserProfile(
+    user: FirebaseUser,
+    displayName?: string | null
+  ) {
+    await updateProfile(user, { displayName: displayName })
+      .then(() => {
+        sendEmailVerification(user);
+        setValue({
+          ...value,
+          loading: false,
+          success: true,
+        });
+        Toast.show({
+          type: ALERT_TYPE.INFO,
+          title: "Email verification",
+          textBody: "A verification email has been sent to your email address.",
+        });
+        navigation.navigate("ExpertiseSelectionScreen")
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValue({
+          ...value,
+          loading: false,
+        });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Loader showLoader={value.loading} /> */}
+      <Loader showLoader={value.loading} />
 
       <View style={{ flex: 1, margin: SIZES.md, paddingTop: SIZES.lg }}>
-        <Text
-          style={{
-            ...TYPOGRAPHY.h3,
-            fontSize: SIZES.xl - 2,
-            alignSelf: "center",
-          }}
-        >
-          Sign up
-        </Text>
-        <Text
-          style={{
-            ...TYPOGRAPHY.p,
-            marginTop: SIZES.md,
-            alignSelf: "center",
-          }}
-        >
-          Find your dream job with us
-        </Text>
+        <Text style={styles.titleText}>Sign up</Text>
+        <Text style={styles.subtitleText}>Find your dream job with us</Text>
 
         <TextInput
           mode="outlined"
@@ -145,21 +165,12 @@ const SignupScreen = () => {
           placeholderTextColor={"#ADADAF"}
           // textColor={COLORS.onSecondaryContainer}
         />
-        {errors.name && (
-          <Text
-            style={{
-              ...TYPOGRAPHY.p,
-              alignSelf: "flex-end",
-              color: COLORS.red,
-            }}
-          >
-            Name is required
-          </Text>
-        )}
+        {errors.name && <Text style={styles.errorText}>Name is required</Text>}
 
         <TextInput
           mode="outlined"
           placeholder="Email"
+          keyboardType="email-address"
           theme={{ roundness: SIZES.xs }}
           value={value.email}
           onChangeText={(text) => {
@@ -177,15 +188,7 @@ const SignupScreen = () => {
           // textColor={COLORS.onSecondaryContainer}
         />
         {errors.email && (
-          <Text
-            style={{
-              ...TYPOGRAPHY.p,
-              alignSelf: "flex-end",
-              color: COLORS.red,
-            }}
-          >
-            Email is required
-          </Text>
+          <Text style={styles.errorText}>Email is required</Text>
         )}
 
         <TextInput
@@ -209,34 +212,23 @@ const SignupScreen = () => {
           // textColor={COLORS.onSecondaryContainer}
         />
         {errors.password && (
-          <Text
-            style={{
-              ...TYPOGRAPHY.p,
-              alignSelf: "flex-end",
-              color: COLORS.red,
-            }}
-          >
-            Password is required
-          </Text>
+          <Text style={styles.errorText}>Password is required</Text>
         )}
 
         <ActionButton
+          disabled={disabled}
           onPress={signUp}
-          style={{ width: "100%", marginTop: SIZES.lg }}
+          style={{
+            width: "100%",
+            marginTop: SIZES.lg,
+            opacity: disabled ? 0.5 : 1,
+          }}
           buttonTitle={"Sign up"}
           buttonColor={COLORS.primary}
           textColor={COLORS.white}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            marginTop: SIZES.xl,
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
+        <View style={styles.dividerContainer}>
           <View
             style={{ flex: 0.42, height: 1, backgroundColor: COLORS.darkGray }}
           />
@@ -248,7 +240,11 @@ const SignupScreen = () => {
 
         <GoogleButton
           onPress={() =>
-            setValue({ ...value, showSnackBar: true, message: "Coming soon.." })
+            Toast.show({
+              type: ALERT_TYPE.INFO,
+              title: "Coming soon",
+              textBody: "This feature isn't available yet",
+            })
           }
           style={{ width: "100%", marginTop: SIZES.lg }}
           buttonTitle={"Sign up with Google"}
@@ -256,7 +252,11 @@ const SignupScreen = () => {
 
         <AppleButton
           onPress={() =>
-            setValue({ ...value, showSnackBar: true, message: "Coming soon.." })
+            Toast.show({
+              type: ALERT_TYPE.INFO,
+              title: "Coming soon",
+              textBody: "This feature isn't available yet",
+            })
           }
           style={{ width: "100%", marginTop: SIZES.lg }}
           buttonTitle={"Sign up with Apple"}
@@ -265,14 +265,7 @@ const SignupScreen = () => {
         <View
           style={{ flex: 1, justifyContent: "flex-end", alignItems: "center" }}
         >
-          <View
-            style={{
-              height: 1,
-              backgroundColor: COLORS.darkGray,
-              marginBottom: SIZES.md,
-              width: width,
-            }}
-          />
+          <View style={{ ...styles.bottomDivider, width: width }} />
           <View style={{ flexDirection: "row" }}>
             <Text style={{ ...TYPOGRAPHY.h5 }}>Already have an account?</Text>
             <TouchableOpacity
@@ -289,23 +282,6 @@ const SignupScreen = () => {
           </View>
         </View>
       </View>
-
-      <Snackbar
-        visible={value.showSnackBar}
-        onDismiss={() => setValue({ ...value, message: "" })}
-        theme={{ colors: { primary: COLORS.primary } }}
-        action={{
-          //   textColor: COLORS.primary,
-          label: "OK",
-          onPress: () => {
-            if (value.success) navigation.navigate("LoginScreen" as never);
-          },
-        }}
-      >
-        <Text style={{ ...TYPOGRAPHY.p, color: COLORS.white }}>
-          {value.message}
-        </Text>
-      </Snackbar>
     </SafeAreaView>
   );
 };

@@ -23,6 +23,7 @@ const JobSeekerScreens = () => {
         component={ExpertiseSelectionScreen}
         options={{
           headerShown: false,
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen

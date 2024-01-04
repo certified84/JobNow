@@ -10,8 +10,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Amazon",
-    status: "pending",
-    statusUpdateDate: "Today",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -33,8 +31,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Meta",
-    status: "sent",
-    statusUpdateDate: "Yesterday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -56,8 +52,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Microsoft",
-    status: "rejected",
-    statusUpdateDate: "Today",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -79,8 +73,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Google",
-    status: "sent",
-    statusUpdateDate: "Friday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -102,8 +94,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Doordash",
-    status: "pending",
-    statusUpdateDate: "Wednessday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -125,8 +115,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Apple",
-    status: "accepted",
-    statusUpdateDate: "Friday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -148,8 +136,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Netflix",
-    status: "accepted",
-    statusUpdateDate: "Tuesday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -171,8 +157,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Goldman Sachs",
-    status: "rejected",
-    statusUpdateDate: "Thursday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [
@@ -194,8 +178,6 @@ export const jobs: Job[] = [
     locationType: "Remote",
     location: "Georgia, United States",
     company: "Bank of America",
-    status: "sent",
-    statusUpdateDate: "Monday",
     description:
       "We are seeking a passionate and experienced Senior Product Designer to join our growing team. As a Senior Product Designer, you will play a pivotal role in shaping the future of our products translating user needs into elegant and effective design sthat drive business growth. You will collaborate with cross-functional teams, including engineers, product managers, and marketers, to ensure that our products are user-centered, business-driven and aligned with our overall vision.",
     requirements: [

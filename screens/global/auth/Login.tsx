@@ -19,15 +19,20 @@ import { useEffect, useState } from "react";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
 import { StackNavigation } from "../../../types";
 // import { auth } from "../../../../firebase";
-// import {
-//   signInWithEmailAndPassword,
-//   GoogleAuthProvider,
-//   signInWithCredential,
-// } from "firebase/auth";
-// import { Loader } from "../../../components/Loader";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithCredential,
+  User as FirebaseUser,
+} from "firebase/auth";
+import { auth, firestore } from "../../../firebase";
+import { Loader } from "../../../components/Loader";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { is_email } from "../../../constants";
+import { doc, getDoc } from "firebase/firestore";
+import { User } from "../../../data/models/User";
 // import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import auth from '@react-native-firebase/auth';
 
 const LoginScreen = () => {
   const navigation = useNavigation<StackNavigation>();
@@ -43,7 +48,6 @@ const LoginScreen = () => {
   const [value, setValue] = useState({
     email: "",
     password: "",
-    message: "",
     loading: false,
     showSnackBar: false,
   });
@@ -53,10 +57,7 @@ const LoginScreen = () => {
     password: false,
   });
 
-  useEffect(
-    () => setValue({ ...value, showSnackBar: value.message !== "" }),
-    [value.message]
-  );
+  const disabled = value.email === "" || value.password === "";
 
   async function signInWithGoogle() {
     setValue({ ...value, loading: true });
@@ -93,57 +94,61 @@ const LoginScreen = () => {
   }
 
   async function signIn() {
-    if (value.email === "") {
+    if (!is_email(value.email)) {
       setErrors({ ...errors, email: true });
-      return;
-    } else if (value.password === "") {
-      setErrors({ ...errors, password: true });
       return;
     }
 
     setValue({ ...value, loading: true });
-    // await signInWithEmailAndPassword(auth, value.email, value.password)
-    //   .then((userCredential) => {
-    //     const user = userCredential.user;
-    //     setValue({ ...value, loading: false });
-    //     if (!user.emailVerified) {
-    //       setValue({ ...value, message: "Please verify your email address." });
-    //       auth.signOut();
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.log(errorCode, errorMessage);
-    //     setValue({
-    //       ...value,
-    //       message: "An error occurred. Please try again.",
-    //       loading: false,
-    //     });
-    //   });
+    await signInWithEmailAndPassword(auth, value.email, value.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        fetchUserData(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValue({
+          ...value,
+          loading: false,
+        });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
+  }
+
+  async function fetchUserData(user: FirebaseUser) {
+    const userRef = doc(firestore, "users", user.uid);
+    getDoc(userRef).then((snapshot) => {
+      setValue({ ...value, loading: false });
+      if (snapshot.exists()) {
+        const userData = snapshot.data() as User;
+        if (userData.skills.length <= 0) {
+          navigation.navigate("ExpertiseSelectionScreen");
+        } else {
+          navigation.navigate("JobSeekerDashboard");
+        }
+      } else {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      }
+    });
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Loader showLoader={value.loading} /> */}
+      <Loader showLoader={value.loading} />
 
       <View style={{ flex: 1, margin: SIZES.md, paddingTop: SIZES.lg }}>
-        <Text
-          style={{
-            ...TYPOGRAPHY.h3,
-            fontSize: SIZES.xl - 2,
-            alignSelf: "center",
-          }}
-        >
-          Sign in
-        </Text>
-        <Text
-          style={{
-            ...TYPOGRAPHY.p,
-            marginTop: SIZES.md,
-            alignSelf: "center",
-          }}
-        >
+        <Text style={styles.titleText}>Sign in</Text>
+        <Text style={styles.subtitleText}>
           New jobs might have been added since you last logged in
         </Text>
 
@@ -151,6 +156,7 @@ const LoginScreen = () => {
           mode="outlined"
           placeholder="Email"
           theme={{ roundness: SIZES.xs }}
+          keyboardType="email-address"
           value={value.email}
           onChangeText={(text) => {
             if (text !== "") {
@@ -167,15 +173,7 @@ const LoginScreen = () => {
           //   textColor={COLORS.black}
         />
         {errors.email && (
-          <Text
-            style={{
-              ...TYPOGRAPHY.p,
-              alignSelf: "flex-end",
-              color: COLORS.red,
-            }}
-          >
-            Email is required
-          </Text>
+          <Text style={styles.errorText}>Email is required</Text>
         )}
 
         <TextInput
@@ -199,15 +197,7 @@ const LoginScreen = () => {
           //   textColor={COLORS.black}
         />
         {errors.password && (
-          <Text
-            style={{
-              ...TYPOGRAPHY.p,
-              alignSelf: "flex-end",
-              color: COLORS.red,
-            }}
-          >
-            Password is required
-          </Text>
+          <Text style={styles.errorText}>Password is required</Text>
         )}
 
         <TouchableOpacity
@@ -221,34 +211,31 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         <ActionButton
-          style={{ width: "100%", marginTop: SIZES.lg }}
+          disabled={disabled}
+          onPress={signIn}
+          style={{
+            width: "100%",
+            marginTop: SIZES.lg,
+            opacity: disabled ? 0.5 : 1,
+          }}
           buttonTitle={"Sign in"}
           buttonColor={COLORS.primary}
           textColor={COLORS.white}
-          onPress={signIn}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            marginTop: SIZES.xl,
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <View
-            style={{ flex: 0.42, height: 1, backgroundColor: COLORS.darkGray }}
-          />
+        <View style={styles.dividerContainer}>
+          <View style={styles.line} />
           <Text style={{ ...TYPOGRAPHY.h5 }}>OR</Text>
-          <View
-            style={{ flex: 0.42, height: 1, backgroundColor: COLORS.darkGray }}
-          />
+          <View style={styles.line} />
         </View>
 
         <GoogleButton
           onPress={() =>
-            setValue({ ...value, showSnackBar: true, message: "Coming soon.." })
+            Toast.show({
+              type: ALERT_TYPE.INFO,
+              title: "Coming soon",
+              textBody: "This feature isn't available yet",
+            })
           }
           style={{ width: "100%", marginTop: SIZES.lg }}
           buttonTitle={"Sign in with Google"}
@@ -256,7 +243,11 @@ const LoginScreen = () => {
 
         <AppleButton
           onPress={() =>
-            setValue({ ...value, showSnackBar: true, message: "Coming soon.." })
+            Toast.show({
+              type: ALERT_TYPE.INFO,
+              title: "Coming soon",
+              textBody: "This feature isn't available yet",
+            })
           }
           style={{ width: "100%", marginTop: SIZES.lg }}
           buttonTitle={"Sign in with Apple"}
@@ -265,14 +256,7 @@ const LoginScreen = () => {
         <View
           style={{ flex: 1, justifyContent: "flex-end", alignItems: "center" }}
         >
-          <View
-            style={{
-              height: 1,
-              backgroundColor: COLORS.darkGray,
-              marginBottom: SIZES.md,
-              width: width,
-            }}
-          />
+          <View style={styles.bottomDivider} />
           <View style={{ flexDirection: "row" }}>
             <Text style={{ ...TYPOGRAPHY.h5 }}>New to JobNow?</Text>
             <TouchableOpacity
@@ -289,21 +273,6 @@ const LoginScreen = () => {
           </View>
         </View>
       </View>
-
-      <Snackbar
-        visible={value.showSnackBar}
-        onDismiss={() => setValue({ ...value, message: "" })}
-        theme={{ colors: { primary: COLORS.primary } }}
-        action={{
-          //   textColor: COLORS.primary,
-          label: "OK",
-          onPress: () => {},
-        }}
-      >
-        <Text style={{ ...TYPOGRAPHY.p, color: COLORS.white }}>
-          {value.message}
-        </Text>
-      </Snackbar>
     </SafeAreaView>
   );
 };
@@ -332,4 +301,32 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     textDecorationLine: "underline",
   },
+  titleText: {
+    ...TYPOGRAPHY.h3,
+    fontSize: SIZES.xl - 2,
+    alignSelf: "center",
+  },
+  subtitleText: {
+    ...TYPOGRAPHY.p,
+    marginTop: SIZES.md,
+    alignSelf: "center",
+  },
+  errorText: {
+    ...TYPOGRAPHY.p,
+    alignSelf: "flex-end",
+    color: COLORS.red,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    width: "100%",
+    marginTop: SIZES.xl,
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  bottomDivider: {
+    height: 1,
+    backgroundColor: COLORS.darkGray,
+    marginBottom: SIZES.md,
+  },
+  line: { flex: 0.42, height: 1, backgroundColor: COLORS.darkGray },
 });
