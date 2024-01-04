@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "414963899494",
+    "project_id": "jobnow-e8c11",
+    "storage_bucket": "jobnow-e8c11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414963899494:android:a12751a4f5de7a9dc461a7",
+        "android_client_info": {
+          "package_name": "com.certified.jobnow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5kir-_mxyO2qJ57mRKOtooQTkRkdaWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
