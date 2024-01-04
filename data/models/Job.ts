@@ -1,3 +1,5 @@
+import { FieldValue, Timestamp, serverTimestamp } from "firebase/firestore";
+
 type JobStatus = "pending" | "sent" | "rejected" | "accepted";
 
 export type Job = {
@@ -11,6 +13,7 @@ export type Job = {
   companyLogo?: string | null;
   description: string;
   requirements: string[];
+  date?: FieldValue | null,
 };
 
 export const defaultJob: Job = {
@@ -23,12 +26,13 @@ export const defaultJob: Job = {
   company: "",
   description: "",
   requirements: [""],
+  date: serverTimestamp(),
 };
 
 
 export type Application = {
   id: string;
-  jobId: string;
+  job: Job;
   userId: string;
   status: JobStatus;
   statusUpdate?: string;

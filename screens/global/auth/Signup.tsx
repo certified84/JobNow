@@ -29,6 +29,7 @@ import { is_email } from "../../../constants";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import { User, defaultUser } from "../../../data/models/User";
 import { Props } from "../../../types";
+import { Ionicons } from "@expo/vector-icons";
 
 const SignupScreen: React.FC<Props> = ({route, navigation}) => {
   const { width } = useWindowDimensions();
@@ -38,7 +39,7 @@ const SignupScreen: React.FC<Props> = ({route, navigation}) => {
     email: "",
     password: "",
     loading: false,
-    showSnackBar: false,
+    showPassword: false,
     success: false,
   });
 
@@ -204,7 +205,32 @@ const SignupScreen: React.FC<Props> = ({route, navigation}) => {
             }
             setValue({ ...value, password: text });
           }}
-          secureTextEntry={true}
+          secureTextEntry={!value.showPassword}
+          right={
+            <TextInput.Icon
+              icon={() => (
+                <TouchableOpacity
+                  onPress={() => setValue({...value, showPassword: !value.showPassword})}
+                  activeOpacity={0.5}
+                >
+                  {value.showPassword ? (
+                    <Ionicons
+                      name="eye-off"
+                      color={COLORS.primary}
+                      size={SIZES.md}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="eye"
+                      color={COLORS.primary}
+                      size={SIZES.md}
+                    />
+                  )}
+                </TouchableOpacity>
+              )}
+              color={COLORS.primary}
+            />
+          }
           style={styles.inputField}
           activeOutlineColor={COLORS.primary}
           selectionColor={COLORS.primary}

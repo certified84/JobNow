@@ -15,15 +15,37 @@ import {
 import { Props } from "../../types";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../theme";
 import { Avatar } from "react-native-paper";
-import { SimpleLineIcons } from "@expo/vector-icons";
-import { jobs } from "../../data/defaultData";
+import { SimpleLineIcons, FontAwesome5 } from "@expo/vector-icons";
 import Search from "../../components/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JobComponent from "../../components/JobComponent";
+import { auth, firestore } from "../../firebase";
+import SplashIcon from "../../assets/svg/SplashIcon";
+import { collection, query } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
+  const user = auth.currentUser!;
+
+  const jobsRef = collection(firestore, "jobs");
+  const q = query(
+    jobsRef,
+    // where("communityId", "==", "")
+    // orderBy("date", "desc")
+  );
+  const [jobsSnapshot, jobsLoading, jobsError] = useCollection(q);
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    if (jobsSnapshot) {
+      const data = jobsSnapshot.docs;
+      console.log("Jobs", data)
+      setJobs(data);
+    }
+  }, [jobsSnapshot]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={styles.innerContainer}>
@@ -33,16 +55,15 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
               activeOpacity={0.6}
               onPress={() => navigation.navigate("JobSeekerProfileScreen")}
             >
-              <Avatar.Image
-                source={{
-                  uri: "https://source.unsplash.com/random/?computer,developer",
-                }}
-                size={50}
-              />
+              {user.photoURL ? (
+                <Avatar.Image size={50} source={{ uri: user.photoURL }} />
+              ) : (
+                <FontAwesome5 size={40} name="user-circle" />
+              )}
             </TouchableOpacity>
             <View style={{ marginStart: SIZES.sm }}>
               <Text style={{ ...TYPOGRAPHY.h5 }}>Hello,</Text>
-              <Text style={{ ...TYPOGRAPHY.h3 }}>Bolarinwa Tobi</Text>
+              <Text style={{ ...TYPOGRAPHY.h3 }}>{user.displayName}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -101,13 +122,13 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
               <JobComponent
-                job={item}
+                job={item.data()}
                 width={width * 0.7}
                 horizontal
                 navigation={navigation}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.data().id}
           />
 
           <View style={styles.moreContainer}>
@@ -135,13 +156,13 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
               <JobComponent
-                job={item}
+                job={item.data()}
                 width={width * 0.7}
                 horizontal
                 navigation={navigation}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.data().id}
           />
           <View style={{ height: 90 }} />
         </ScrollView>
@@ -182,6 +203,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
     borderColor: "gray",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 4,
   },
   searchContainer: {

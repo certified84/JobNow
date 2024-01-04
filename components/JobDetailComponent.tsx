@@ -1,58 +1,62 @@
 import { View, Image, Text, StyleSheet } from "react-native";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
 import { Briefcase } from "../assets/svg/Onboarding";
-import { Job } from "../data/models/Job";
+import { Application, Job } from "../data/models/Job";
 
 interface JobProps {
-  job: Job;
+  application?: Application;
+  job?: Job
 }
 
-const JobDetailComponent: React.FC<JobProps> = ({ job }) => (
-  <View style={styles.jobContainer}>
-    <View style={styles.companyLogoContainer}>
-      {job.companyLogo && (
-        <Image
-          source={{ uri: job.companyLogo }}
-          style={{ width: 24, height: 24 }}
-        />
-      )}
-      {!job.companyLogo && <Briefcase />}
-    </View>
-
-    <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
-      {job.title}
-    </Text>
-
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Text style={{ ...TYPOGRAPHY.p }}>{`${job.company}   \u2022   `} </Text>
-      <View style={styles.jobTypeContainer}>
-        <Text
-          style={{
-            ...TYPOGRAPHY.p,
-            color: COLORS.primary,
-          }}
-        >
-          {job.type}
-        </Text>
+const JobDetailComponent: React.FC<JobProps> = ({ application, job }) => {
+  const jb = application?.job ?? job!;
+  return (
+    <View style={styles.jobContainer}>
+      <View style={styles.companyLogoContainer}>
+        {jb.companyLogo && (
+          <Image
+            source={{ uri: jb.companyLogo }}
+            style={{ width: 24, height: 24 }}
+          />
+        )}
+        {!jb.companyLogo && <Briefcase />}
       </View>
-      <View style={styles.jobTypeContainer}>
-        <Text
-          style={{
-            ...TYPOGRAPHY.p,
-            color: COLORS.primary,
-          }}
-        >
-          {job.locationType}
-        </Text>
+
+      <Text style={{ ...TYPOGRAPHY.h3, marginVertical: SIZES.xs }}>
+        {jb.title}
+      </Text>
+
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={{ ...TYPOGRAPHY.p }}>{`${jb.company}   \u2022   `} </Text>
+        <View style={styles.jobTypeContainer}>
+          <Text
+            style={{
+              ...TYPOGRAPHY.p,
+              color: COLORS.primary,
+            }}
+          >
+            {jb.type}
+          </Text>
+        </View>
+        <View style={styles.jobTypeContainer}>
+          <Text
+            style={{
+              ...TYPOGRAPHY.p,
+              color: COLORS.primary,
+            }}
+          >
+            {jb.locationType}
+          </Text>
+        </View>
       </View>
+
+      <View style={{ ...styles.line, width: "100%" }} />
+
+      <Text style={styles.jobLocation}>{jb.location}</Text>
+      <Text style={styles.pay}>{jb.pay}</Text>
     </View>
-
-    <View style={{ ...styles.line, width: "100%" }} />
-
-    <Text style={styles.jobLocation}>{job.location}</Text>
-    <Text style={styles.pay}>{job.pay}</Text>
-  </View>
-);
+  );
+};
 
 export default JobDetailComponent;
 

@@ -11,10 +11,21 @@ import { COLORS, SIZES } from "../../../theme";
 import Header from "../../../components/Header";
 import { StackParamList } from "../../../types";
 import Search from "../../../components/Search";
-import { useState } from "react";
-import { jobs } from "../../../data/defaultData";
+import { useEffect, useState } from "react";
 import JobComponent from "../../../components/JobComponent";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
+import {
+  DocumentData,
+  Firestore,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
+import { firestore } from "../../../firebase";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { Job } from "../../../data/models/Job";
+import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
+import { Loader } from "../../../components/Loader";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobsScreen">;
 type NavProp = NavigationProp<StackParamList, "JobsScreen">;
@@ -28,8 +39,27 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
   const [bookmarked, setBookmarked] = useState(route!.params.bookmarked);
+
+  const jobsRef = collection(firestore, "jobs");
+  const q = query(
+    jobsRef,
+    // where("communityId", "==", "")
+    // orderBy("date", "desc")
+  );
+  const [jobsSnapshot, jobsLoading, jobsError] = useCollection(q);
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    if (jobsSnapshot) {
+      const data = jobsSnapshot.docs;
+      console.log("Jobs", data)
+      setJobs(data);
+    }
+  }, [jobsSnapshot]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <Loader showLoader={jobsLoading}/>
       <View style={styles.innerContainer}>
         <Header
           title={route!.params.title}
@@ -55,7 +85,11 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
           data={jobs}
           style={{ marginHorizontal: SIZES.md }}
           renderItem={({ item, index }) => (
-            <JobComponent job={item} width={width - SIZES.md * 2} navigation={navigation} />
+            <JobComponent
+              job={item.data()}
+              width={width - SIZES.md * 2}
+              navigation={navigation}
+            />
           )}
           keyExtractor={(item) => item.id}
           ListFooterComponent={() => <View style={{ height: 90 }} />}

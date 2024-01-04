@@ -24,6 +24,7 @@ import {
   User,
 } from "../../../assets/svg/Job";
 import { is_email } from "../../../constants";
+import { auth } from "../../../firebase";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationScreen">;
@@ -35,6 +36,7 @@ type Props = {
 
 const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
+  const user = auth.currentUser;
   const [values, setValues] = useState({
     bookmarked: route?.params.bookmarked,
     name: "",
@@ -80,12 +82,12 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
             left={<TextInput.Icon icon={() => <User />} />}
             style={styles.textInput}
             mode="outlined"
+            editable={false}
             outlineColor={"transparent"}
             activeOutlineColor={COLORS.primary}
             placeholderTextColor={"#ADADAF"}
             selectionColor={COLORS.black}
-            value={values.name}
-            onChangeText={(text) => setValues({ ...values, name: text })}
+            value={user?.displayName ?? ""}
           />
 
           <Text style={{ ...TYPOGRAPHY.h4 }}>Email</Text>
@@ -100,8 +102,8 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
             activeOutlineColor={COLORS.primary}
             placeholderTextColor={"#ADADAF"}
             selectionColor={COLORS.black}
-            value={values.email}
-            onChangeText={(text) => setValues({ ...values, email: text })}
+            value={user?.email ?? ""}
+            editable={false}
           />
 
           <Text style={{ ...TYPOGRAPHY.h4 }}>Upload Resume</Text>

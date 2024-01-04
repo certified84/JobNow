@@ -26,7 +26,7 @@ type Props = {
 
 const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
-  const job = route?.params.job!;
+  const application = route?.params.application!;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={styles.innerContainer}>
@@ -38,7 +38,7 @@ const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           bookmarked={false}
         />
 
-        <JobDetailComponent job={job} />
+        <JobDetailComponent application={application} />
 
         <View style={{ marginHorizontal: SIZES.md, marginTop: SIZES.lg }}>
           <Text style={{ ...TYPOGRAPHY.h4 }}>Resume</Text>
@@ -61,22 +61,22 @@ const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             <View
               style={{
                 ...styles.statusContainer,
-                backgroundColor: JobStatus[job.status].background,
+                backgroundColor: JobStatus[application.status].background,
               }}
             >
               <Text
                 style={{
                   ...TYPOGRAPHY.p,
-                  color: JobStatus[job.status].color,
+                  color: JobStatus[application.status].color,
                 }}
               >
-                {JobStatus[job.status].text}
+                {JobStatus[application.status].text}
               </Text>
             </View>
             <Text style={{ ...TYPOGRAPHY.p }}>Today</Text>
           </View>
 
-          <Text style={{...TYPOGRAPHY.p}}>{JobStatus[job.status].update}</Text>
+          <Text style={{...TYPOGRAPHY.p}}>{JobStatus[application.status].update}</Text>
         </View>
       </View>
     </SafeAreaView>

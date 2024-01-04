@@ -31,6 +31,7 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import { is_email } from "../../../constants";
 import { doc, getDoc } from "firebase/firestore";
 import { User } from "../../../data/models/User";
+import { Ionicons } from "@expo/vector-icons";
 // import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -49,7 +50,7 @@ const LoginScreen = () => {
     email: "",
     password: "",
     loading: false,
-    showSnackBar: false,
+    showPassword: false,
   });
 
   const [errors, setErrors] = useState({
@@ -189,7 +190,32 @@ const LoginScreen = () => {
             }
             setValue({ ...value, password: text });
           }}
-          secureTextEntry={true}
+          secureTextEntry={!value.showPassword}
+          right={
+            <TextInput.Icon
+              icon={() => (
+                <TouchableOpacity
+                  onPress={() => setValue({...value, showPassword: !value.showPassword})}
+                  activeOpacity={0.5}
+                >
+                  {value.showPassword ? (
+                    <Ionicons
+                      name="eye-off"
+                      color={COLORS.primary}
+                      size={SIZES.md}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="eye"
+                      color={COLORS.primary}
+                      size={SIZES.md}
+                    />
+                  )}
+                </TouchableOpacity>
+              )}
+              color={COLORS.primary}
+            />
+          }
           style={styles.inputField}
           activeOutlineColor={COLORS.primary}
           selectionColor={COLORS.primary}

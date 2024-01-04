@@ -17,8 +17,8 @@ import Search from "../../../components/Search";
 import { useState } from "react";
 import { jobs } from "../../../data/defaultData";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
-import { Job } from "../../../data/models/Job";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Application, Job } from "../../../data/models/Job";
+import { Ionicons } from "@expo/vector-icons";
 import { Briefcase } from "../../../assets/svg/Onboarding";
 import { JobStatus } from "../../../constants";
 
@@ -61,7 +61,7 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
           style={{ marginHorizontal: SIZES.md }}
           renderItem={({ item, index }) => (
             <JobComponent
-              job={item}
+              application={item}
               width={width - SIZES.md * 2}
               navigation={navigation}
             />
@@ -77,12 +77,16 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
 export default JobApplicationsScreen;
 
 interface JobComponentProps {
-  job: Job;
+  application: Application;
   width: number;
   navigation: StackNavigation;
 }
 
-const JobComponent: React.FC<JobComponentProps> = ({ job, navigation }) => {
+const JobComponent: React.FC<JobComponentProps> = ({
+  application,
+  navigation,
+}) => {
+  const job = application.job;
   return (
     <TouchableOpacity
       style={{ marginHorizontal: SIZES.md }}
@@ -109,16 +113,16 @@ const JobComponent: React.FC<JobComponentProps> = ({ job, navigation }) => {
               <View
                 style={{
                   ...styles.statusContainer,
-                  backgroundColor: JobStatus[job.status].background,
+                  backgroundColor: JobStatus[application.status].background,
                 }}
               >
                 <Text
                   style={{
                     ...TYPOGRAPHY.p,
-                    color: JobStatus[job.status].color,
+                    color: JobStatus[application.status].color,
                   }}
                 >
-                  {JobStatus[job.status].text}
+                  {JobStatus[application.status].text}
                 </Text>
               </View>
             </View>

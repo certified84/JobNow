@@ -1,7 +1,7 @@
 export type StackNavigation = StackNavigationProp<StackParamList>;
 
 import { RouteProp, NavigationProp } from "@react-navigation/native";
-import { Job } from "../data/models/Job";
+import { Application, Job } from "../data/models/Job";
 
 type StackParamList = {
   ExpertiseSelectionScreen: {};
@@ -30,7 +30,7 @@ type StackParamList = {
     title: string;
   };
   JobApplicationDetailScreen: {
-    job: Job;
+    application: Application;
     title: string;
   };
 };

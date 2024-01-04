@@ -23,6 +23,10 @@ import RequirementsTab from "./tabs/Requirements";
 import RenderTab from "./components/RenderTab";
 import { Briefcase } from "../../../assets/svg/Onboarding";
 import JobDetailComponent from "../../../components/JobDetailComponent";
+import { Job } from "../../../data/models/Job";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { firestore } from "../../../firebase";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobDetailScreen">;
 type NavProp = NavigationProp<StackParamList, "JobDetailScreen">;
@@ -43,6 +47,28 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
       { key: "requirements", title: "Requirements" },
     ],
   });
+
+  async function uploadData(job: Job) {
+    await addDoc(collection(firestore, "jobs"), job)
+      .then((snapshot) => {
+        updateDoc(snapshot, { id: snapshot.id });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        // setValue({
+        //   ...value,
+        //   loading: false,
+        // });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again.",
+        });
+      });
+  }
+
   const renderScene = SceneMap({
     description: () => <DescriptionTab job={job} />,
     requirements: () => <RequirementsTab job={job} />,
@@ -60,7 +86,7 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           }
         />
         {/* <ScrollView style={{ flex: 1 }}> */}
-        <JobDetailComponent job={job}/>
+        <JobDetailComponent job={job} />
 
         <View style={{ ...styles.line, margin: SIZES.md }} />
 
@@ -80,14 +106,14 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
 
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() =>
+          onPress={() => {
             navigation?.navigate("JobApplicationScreen", {
               job: job,
               title: "Apply to Job",
               showBookmark: false,
               bookmarked: false,
-            })
-          }
+            });
+          }}
           style={styles.btnContinue}
         >
           <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
