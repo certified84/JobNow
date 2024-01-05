@@ -33,7 +33,7 @@ export const defaultJob: Job = {
 export type Application = {
   id: string;
   job: Job;
-  userId: string;
+  uid: string;
   status: JobStatus;
   statusUpdate?: string;
   statusUpdateDate: string;
@@ -41,10 +41,10 @@ export type Application = {
   coverLetter: string;
 };
 
-export const defaultApplication = {
+export const defaultApplication: Application = {
   id: "",
-  jobId: "",
-  userId: "",
+  job: defaultJob,
+  uid: "",
   status: "pending",
   statusUpdate: "",
   statusUpdateDate: "",

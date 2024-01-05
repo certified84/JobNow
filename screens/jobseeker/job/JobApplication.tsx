@@ -24,7 +24,15 @@ import {
   User,
 } from "../../../assets/svg/Job";
 import { is_email } from "../../../constants";
-import { auth } from "../../../firebase";
+import { auth, firestore, storage } from "../../../firebase";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
+import { getDownloadURL, ref } from "firebase/storage";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { useUploadFile } from "react-firebase-hooks/storage";
+import { Application, defaultApplication } from "../../../data/models/Job";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { Loader } from "../../../components/Loader";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationScreen">;
@@ -34,10 +42,25 @@ type Props = {
   navigation?: NavProp;
 };
 
+interface ValuesProps {
+  bookmarked?: boolean;
+  name: string;
+  email: string;
+  porfolioLink: string;
+  coverLetter: string;
+  resume: boolean;
+  resumeUploaded: boolean;
+  loading: boolean;
+  file?: string | null;
+  application?: Application;
+}
+
 const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
   const user = auth.currentUser;
-  const [values, setValues] = useState({
+  const job = route?.params.job!;
+  const splitIndex = user?.displayName?.indexOf(" ");
+  const [values, setValues] = useState<ValuesProps>({
     bookmarked: route?.params.bookmarked,
     name: "",
     email: "",
@@ -45,14 +68,13 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
     coverLetter: "",
     resume: false,
     resumeUploaded: false,
+    loading: false,
+    file: null,
+    application: { ...defaultApplication, job: job },
   });
 
   const disabled =
-    values.name.length <= 0 ||
-    values.email.length <= 0 ||
-    !is_email(values.email) ||
-    values.porfolioLink.length <= 0 ||
-    values.coverLetter.length <= 0;
+    values.porfolioLink.length <= 0 || values.coverLetter.length <= 0;
 
   useEffect(() => {
     if (values.resume) {
@@ -61,8 +83,143 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
       }, 4000);
     }
   }, [values.resume, values.resumeUploaded]);
+
+  const [uploadFile, uploading, imageSnapshot, imageError] = useUploadFile();
+  const resumeRef = ref(
+    storage,
+    `resumes/${user!.uid}/${job.title} - ${job.company}.pdf`
+  );
+
+  const getResume = async () => {
+    await DocumentPicker.getDocumentAsync({ type: "application/pdf" }).then(
+      (res) => {
+        if (res.assets !== null) {
+          setValues({ ...values, file: res.assets[0].uri });
+          uploadResume(res.assets[0].uri, user!.uid);
+        }
+      }
+    );
+  };
+
+  async function uploadResume(resumeUri: string, id: string) {
+    try {
+      const { uri } = await FileSystem.getInfoAsync(resumeUri);
+      const blob: Blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function (e) {
+          console.log(e);
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.open("GET", uri, true);
+        xhr.send(null);
+      });
+      await uploadFile(resumeRef, blob, { contentType: "pdf/*" })
+        .then(() => setValues({ ...values, resumeUploaded: true }))
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "An error occurred. Please try again",
+          });
+        });
+      // blob.close()
+    } catch (e) {
+      console.log(e);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please try again",
+      });
+    }
+  }
+
+  async function getUrl(id: string) {
+    await getDownloadURL(resumeRef)
+      .then((url) => {
+        updateApplication(url, id);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again",
+        });
+      });
+  }
+  async function uploadApplication() {
+    setValues({ ...values, loading: true });
+    const data = {
+      ...values.application,
+      porfolioLink: values.porfolioLink,
+      coverLetter: values.coverLetter,
+      uid: user?.uid,
+    };
+
+    const docRef = addDoc(
+      collection(firestore, `applications/${user?.uid}/applications`),
+      data
+    );
+    await docRef
+      .then((snapshot) => {
+        updateDoc(snapshot, { id: snapshot.id }).then(() =>
+          getUrl(snapshot.id)
+        );
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setValues({ ...values, loading: false });
+        console.log(errorCode, errorMessage);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again",
+        });
+      });
+  }
+
+  async function updateApplication(url: string, id: string) {
+    const applicationRef = doc(
+      firestore,
+      `applications/${user?.uid}/applications`,
+      id
+    );
+    await updateDoc(applicationRef, { resume: url })
+      .then(() => {
+        setValues({ ...values, loading: false });
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: "Application Submitted",
+          textBody: "Your application has been submitted successfully",
+        });
+        navigation?.goBack();
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValues({ ...values, loading: false });
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again",
+        });
+      });
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <Loader showLoader={values.loading} />
       <View style={styles.innerContainer}>
         <Header
           title={route!.params.title}
@@ -114,7 +271,13 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
                 <FileUploaded />
                 <View style={{ marginStart: SIZES.sm }}>
                   <Text style={{ ...TYPOGRAPHY.h5 }}>
-                    CV-Bolarinwa_Daniel.pdf
+                    {`CV-${user?.displayName?.substring(
+                      0,
+                      splitIndex
+                    )}-${user?.displayName?.substring(
+                      splitIndex ?? 0 + 1,
+                      user?.displayName?.length
+                    )}.pdf`}
                   </Text>
                   <Text style={{ ...TYPOGRAPHY.p, fontSize: SIZES.xs }}>
                     128kb
@@ -132,12 +295,10 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
             </View>
           ) : (
             <View>
-              {!values.resume ? (
+              {!values.file ? (
                 <TouchableOpacity
                   activeOpacity={0.5}
-                  onPress={() =>
-                    setValues({ ...values, resume: !values.resume })
-                  }
+                  onPress={getResume}
                   style={styles.uploadResumeContainer}
                 >
                   <FileUpload />
@@ -191,7 +352,7 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
 
           <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() => {}}
+            onPress={uploadApplication}
             disabled={disabled}
             style={{ ...styles.btnContinue, opacity: disabled ? 0.5 : 1 }}
           >

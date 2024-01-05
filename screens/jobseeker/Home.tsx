@@ -128,7 +128,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
                 navigation={navigation}
               />
             )}
-            keyExtractor={(item) => item.data().id}
+            keyExtractor={(item) => item.id}
           />
 
           <View style={styles.moreContainer}>
@@ -162,7 +162,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
                 navigation={navigation}
               />
             )}
-            keyExtractor={(item) => item.data().id}
+            keyExtractor={(item) => item.id}
           />
           <View style={{ height: 90 }} />
         </ScrollView>
