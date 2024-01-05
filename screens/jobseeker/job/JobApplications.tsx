@@ -14,13 +14,16 @@ import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
 import Header from "../../../components/Header";
 import { StackNavigation, StackParamList } from "../../../types";
 import Search from "../../../components/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { jobs } from "../../../data/defaultData";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
 import { Application, Job } from "../../../data/models/Job";
 import { Ionicons } from "@expo/vector-icons";
 import { Briefcase } from "../../../assets/svg/Onboarding";
 import { JobStatus } from "../../../constants";
+import { collection, query } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { auth, firestore } from "../../../firebase";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationsScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationsScreen">;
@@ -33,6 +36,24 @@ type Props = {
 const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
+  const user = auth.currentUser;
+  const jobsRef = collection(firestore, `applications/${user?.uid}/applications`);
+  const q = query(
+    jobsRef,
+    // where("communityId", "==", "")
+    // orderBy("date", "desc")
+  );
+  const [jobsSnapshot, jobsLoading, jobsError] = useCollection(q);
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    if (jobsSnapshot) {
+      const data = jobsSnapshot.docs;
+      console.log("Applications: ", data)
+      setApplications(data);
+    }
+  }, [jobsSnapshot]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={styles.innerContainer}>
@@ -57,11 +78,11 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
               />
             </View>
           )}
-          data={jobs}
+          data={applications}
           style={{ marginHorizontal: SIZES.md }}
           renderItem={({ item, index }) => (
             <JobComponent
-              application={item}
+              application={item.data()}
               width={width - SIZES.md * 2}
               navigation={navigation}
             />
@@ -92,7 +113,7 @@ const JobComponent: React.FC<JobComponentProps> = ({
       style={{ marginHorizontal: SIZES.md }}
       activeOpacity={0.5}
       onPress={() =>
-        navigation.navigate("JobApplicationDetailScreen", { job: job })
+        navigation.navigate("JobApplicationDetailScreen", { application: application })
       }
     >
       <View style={styles.jobComponentContainer}>

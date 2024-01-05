@@ -15,6 +15,10 @@ import { RouteProp, NavigationProp } from "@react-navigation/native";
 import JobDetailComponent from "../../../components/JobDetailComponent";
 import { JobStatus } from "../../../constants";
 import { FileUploaded } from "../../../assets/svg/Job";
+import { auth, firestore } from "../../../firebase";
+import { Timestamp, doc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationDetailScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationDetailScreen">;
@@ -26,7 +30,26 @@ type Props = {
 
 const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
-  const application = route?.params.application!;
+  const user = auth.currentUser;
+  const splitIndex = user?.displayName?.indexOf(" ");
+
+  const [application, setApplication] = useState(route?.params.application!);
+  const applicationRef = doc(
+    firestore,
+    `applications/${user?.uid}/applications`,
+    application.id
+  );
+  const [snapshot, loading, error] = useDocument(applicationRef);
+  const statusUpdateDate = (application.statusUpdateDate as Timestamp)
+    ?.toDate()
+    .toDateString();
+
+  useEffect(() => {
+    if (snapshot && snapshot.exists()) {
+      setApplication(snapshot.data());
+    }
+  }, [snapshot]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={styles.innerContainer}>
@@ -48,10 +71,14 @@ const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             style={styles.uploadResumeContainer}
           >
             <FileUploaded />
-            <Text
-              style={styles.resume}
-            >
-              CV-Bolarinwa_Daniel.pdf
+            <Text style={styles.resume}>
+              {`CV-${user?.displayName?.substring(
+                0,
+                splitIndex
+              )}-${user?.displayName?.substring(
+                splitIndex ?? 0 + 1,
+                user?.displayName?.length
+              )}.pdf`}
             </Text>
           </TouchableOpacity>
 
@@ -73,10 +100,12 @@ const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                 {JobStatus[application.status].text}
               </Text>
             </View>
-            <Text style={{ ...TYPOGRAPHY.p }}>Today</Text>
+            <Text style={{ ...TYPOGRAPHY.p }}>{statusUpdateDate}</Text>
           </View>
 
-          <Text style={{...TYPOGRAPHY.p}}>{JobStatus[application.status].update}</Text>
+          <Text style={{ ...TYPOGRAPHY.p }}>
+            {JobStatus[application.status].update}
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -104,7 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: SIZES.sm,
   },
   uploadResumeContainer: {
-    overflow:'hidden',
+    overflow: "hidden",
     flexDirection: "row",
     borderWidth: 1,
     borderStyle: "dashed",
@@ -121,5 +150,5 @@ const styles = StyleSheet.create({
     fontFamily: "outfit_semi_bold",
     color: "#ADADAF",
     marginStart: SIZES.md,
-  }
+  },
 });

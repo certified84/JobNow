@@ -73,8 +73,7 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
     application: { ...defaultApplication, job: job },
   });
 
-  const disabled =
-    values.porfolioLink.length <= 0 || values.coverLetter.length <= 0;
+  const disabled = values.porfolioLink.length <= 0;
 
   useEffect(() => {
     if (values.resume) {
@@ -323,6 +322,7 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
             left={<TextInput.Icon icon={() => <Link />} />}
             style={styles.textInput}
             mode="outlined"
+            autoCorrect={false}
             outlineColor={"transparent"}
             activeOutlineColor={COLORS.primary}
             placeholderTextColor={"#ADADAF"}

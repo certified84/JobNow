@@ -36,7 +36,7 @@ export type Application = {
   uid: string;
   status: JobStatus;
   statusUpdate?: string;
-  statusUpdateDate: string;
+  statusUpdateDate?: FieldValue | Timestamp,
   resume: string;
   coverLetter: string;
 };
@@ -47,7 +47,7 @@ export const defaultApplication: Application = {
   uid: "",
   status: "pending",
   statusUpdate: "",
-  statusUpdateDate: "",
+  statusUpdateDate: serverTimestamp(),
   resume: "",
   coverLetter: "",
 };
