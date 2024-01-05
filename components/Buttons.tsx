@@ -56,7 +56,7 @@ export const ActionButton: React.FC<ButtonProps> = ({
 }) => {
   return (
     <TouchableOpacity
-    disabled={disabled}
+      disabled={disabled}
       style={{ ...styles.actionBtn, ...style, backgroundColor: buttonColor }}
       activeOpacity={0.5}
       onPress={onPress}
@@ -84,14 +84,7 @@ export const GoogleButton: React.FC<ButtonProps> = ({
       activeOpacity={0.5}
       onPress={onPress}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingVertical: SIZES.sm,
-        }}
-      >
+      <View style={styles.googleBtnInnerContainer}>
         <GoogleIcon />
         <View style={{ marginHorizontal: SIZES.xs }} />
         <Text
@@ -123,14 +116,7 @@ export const AppleButton: React.FC<ButtonProps> = ({
       activeOpacity={0.5}
       onPress={onPress}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingVertical: SIZES.sm,
-        }}
-      >
+      <View style={styles.googleBtnInnerContainer}>
         <AppleIcon />
         <View style={{ marginHorizontal: SIZES.xs }} />
         <Text
@@ -192,5 +178,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderWidth: 2,
     borderColor: COLORS.primary,
+  },
+  googleBtnInnerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: SIZES.sm,
   },
 });

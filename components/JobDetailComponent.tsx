@@ -5,7 +5,7 @@ import { Application, Job } from "../data/models/Job";
 
 interface JobProps {
   application?: Application;
-  job?: Job
+  job?: Job;
 }
 
 const JobDetailComponent: React.FC<JobProps> = ({ application, job }) => {

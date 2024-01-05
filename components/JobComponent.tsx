@@ -18,7 +18,7 @@ const JobComponent: React.FC<JobProps> = ({
   width,
   horizontal,
   navigation,
-  bookmarked
+  bookmarked,
 }) => {
   return (
     <TouchableOpacity

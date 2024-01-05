@@ -1,13 +1,6 @@
 import { useEffect, useRef } from "react";
-import {
-  Animated,
-  Easing,
-  Image,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Animated, Easing, View, useWindowDimensions } from "react-native";
 import Modal from "react-native-modal";
-import SplashIcon from "../assets/svg/SplashIcon";
 import LoaderIcon from "../assets/svg/LoaderIcon";
 
 interface LoaderProps {
@@ -49,21 +42,21 @@ export const Loader: React.FC<LoaderProps> = ({ showLoader }) => {
   });
 
   return (
-    <Modal
-      isVisible={showLoader}
-      // onBackdropPress={() => {setShowLoader(false)}}
-      animationIn="zoomIn"
-      animationOut="zoomOut"
-      backdropOpacity={0.8}
-      deviceWidth={width}
-      deviceHeight={height}
-      // onSwipeComplete={(gestureState) => setShowLoader(false)}
-    >
-      <Animated.View
-        style={{ alignSelf: "center", transform: [{ scale: scale }] }}
+    <View style={{ flex: 1, backgroundColor: "#969696" }}>
+      <Modal
+        isVisible={showLoader}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        backdropOpacity={0.8}
+        deviceWidth={width}
+        deviceHeight={height}
       >
-        <LoaderIcon />
-      </Animated.View>
-    </Modal>
+        <Animated.View
+          style={{ alignSelf: "center", transform: [{ scale: scale }] }}
+        >
+          <LoaderIcon />
+        </Animated.View>
+      </Modal>
+    </View>
   );
 };

@@ -89,11 +89,7 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
             data={applications}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent
-                application={item.data()}
-                width={width - SIZES.md * 2}
-                navigation={navigation}
-              />
+              <JobComponent application={item.data()} navigation={navigation} />
             )}
             keyExtractor={(item) => item.id}
             ListFooterComponent={() => <View style={{ height: 90 }} />}
@@ -108,7 +104,6 @@ export default JobApplicationsScreen;
 
 interface JobComponentProps {
   application: Application;
-  width: number;
   navigation: StackNavigation;
 }
 
@@ -119,7 +114,6 @@ const JobComponent: React.FC<JobComponentProps> = ({
   const job = application.job;
   return (
     <TouchableOpacity
-      style={{ marginHorizontal: SIZES.md }}
       activeOpacity={0.5}
       onPress={() =>
         navigation.navigate("JobApplicationDetailScreen", {
@@ -139,7 +133,9 @@ const JobComponent: React.FC<JobComponentProps> = ({
             {!job.companyLogo && <Briefcase />}
           </View>
           <View>
-            <Text style={{ ...TYPOGRAPHY.h4 }}>{job.title}</Text>
+            <View>
+              <Text style={{ ...TYPOGRAPHY.h4 }}>{job.title}</Text>
+            </View>
             <View style={styles.companyContainer}>
               <Text style={styles.company}>{job.company}</Text>
               <View

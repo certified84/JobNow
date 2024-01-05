@@ -116,8 +116,16 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
         xhr.open("GET", uri, true);
         xhr.send(null);
       });
-      await uploadFile(resumeRef, blob, { contentType: "pdf/*" })
-        .then(() => setValues({ ...values, resumeUploaded: true }))
+      await uploadFile(resumeRef, blob, { contentType: "application/pdf" })
+        .then(() => {
+          setValues({ ...values, resumeUploaded: true });
+          Toast.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Resume uploaded",
+            textBody:
+              "Resume uploaded successfully. Please complete your application",
+          });
+        })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
