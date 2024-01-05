@@ -23,6 +23,7 @@ import {
 import { Notification } from "../../data/models/Norification";
 import Header from "../../components/Header";
 import { notifications } from "../../data/defaultData";
+import EmptyDesign from "../../components/EmptyDesign";
 
 const NotificationsScreen: React.FC<Props> = ({ route, navigation }) => {
   return (
@@ -31,22 +32,10 @@ const NotificationsScreen: React.FC<Props> = ({ route, navigation }) => {
         <Header title={"Notifications"} navigation={navigation} />
 
         {notifications.length <= 0 ? (
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 24,
-            }}
-          >
-            <EmptyNotifications />
-            <Text style={{ ...TYPOGRAPHY.h4, marginTop: 30, marginBottom: 4 }}>
-              No Notifications
-            </Text>
-            <Text style={{ ...TYPOGRAPHY.p }}>
-              You do not have any notifications yet
-            </Text>
-          </View>
+          <EmptyDesign
+            title="No notifications"
+            description="You do not have any notifications yet"
+          />
         ) : (
           <FlatList
             data={notifications}

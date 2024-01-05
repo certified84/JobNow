@@ -21,13 +21,24 @@ import { useEffect, useState } from "react";
 import JobComponent from "../../components/JobComponent";
 import { auth, firestore } from "../../firebase";
 import SplashIcon from "../../assets/svg/SplashIcon";
-import { collection, query } from "firebase/firestore";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { collection, doc, query } from "firebase/firestore";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { defaultUser } from "../../data/models/User";
 
 const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
   const user = auth.currentUser!;
+  const [userData, setUserData] = useState({ ...defaultUser });
+
+  const userRef = doc(firestore, "users", user!.uid);
+  const [userSnapshot, userLoading, userError] = useDocument(userRef);
+
+  useEffect(() => {
+    if (userSnapshot?.exists) {
+      setUserData(userSnapshot.data());
+    }
+  }, [userSnapshot]);
 
   const jobsRef = collection(firestore, "jobs");
   const q = query(
@@ -126,6 +137,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
                 width={width * 0.7}
                 horizontal
                 navigation={navigation}
+                bookmarked={userData.bookmarks?.includes(item.data().id)}
               />
             )}
             keyExtractor={(item) => item.id}
@@ -160,6 +172,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
                 width={width * 0.7}
                 horizontal
                 navigation={navigation}
+                bookmarked={userData.bookmarks?.includes(item.data().id)}
               />
             )}
             keyExtractor={(item) => item.id}

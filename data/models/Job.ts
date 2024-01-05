@@ -51,15 +51,3 @@ export const defaultApplication: Application = {
   resume: "",
   coverLetter: "",
 };
-
-export type Bookmark = {
-  id: string;
-  userId: string;
-  jobId: string;
-};
-
-export const defaultBookmark = {
-  id: "",
-  userId: "",
-  jobId: "",
-};

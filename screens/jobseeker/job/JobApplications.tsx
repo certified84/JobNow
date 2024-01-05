@@ -15,7 +15,6 @@ import Header from "../../../components/Header";
 import { StackNavigation, StackParamList } from "../../../types";
 import Search from "../../../components/Search";
 import { useEffect, useState } from "react";
-import { jobs } from "../../../data/defaultData";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
 import { Application, Job } from "../../../data/models/Job";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +23,7 @@ import { JobStatus } from "../../../constants";
 import { collection, query } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { auth, firestore } from "../../../firebase";
+import EmptyDesign from "../../../components/EmptyDesign";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobApplicationsScreen">;
 type NavProp = NavigationProp<StackParamList, "JobApplicationsScreen">;
@@ -37,9 +37,12 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
   const user = auth.currentUser;
-  const jobsRef = collection(firestore, `applications/${user?.uid}/applications`);
+  const jobsRef = collection(
+    firestore,
+    `applications/${user?.uid}/applications`
+  );
   const q = query(
-    jobsRef,
+    jobsRef
     // where("communityId", "==", "")
     // orderBy("date", "desc")
   );
@@ -49,7 +52,7 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     if (jobsSnapshot) {
       const data = jobsSnapshot.docs;
-      console.log("Applications: ", data)
+      console.log("Applications: ", data);
       setApplications(data);
     }
   }, [jobsSnapshot]);
@@ -64,32 +67,38 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
           bookmarked={false}
           showBack={false}
         />
-
-        <FlatList
-          ListHeaderComponent={() => (
-            <View style={{ marginBottom: SIZES.md }}>
-              <Search
-                text={searchText}
-                onChangeText={setSearchText}
-                placeHolder="Search..."
-                style={{ marginTop: 0 }}
-                borderColor={"#F0F0F0"}
-                activeBorderColor={COLORS.primary}
+        {applications.length <= 0 ? (
+          <EmptyDesign
+            title="No applications"
+            description="You haven't applied to any jobs yet"
+          />
+        ) : (
+          <FlatList
+            ListHeaderComponent={() => (
+              <View style={{ marginBottom: SIZES.md }}>
+                <Search
+                  text={searchText}
+                  onChangeText={setSearchText}
+                  placeHolder="Search..."
+                  style={{ marginTop: 0 }}
+                  borderColor={"#F0F0F0"}
+                  activeBorderColor={COLORS.primary}
+                />
+              </View>
+            )}
+            data={applications}
+            style={{ marginHorizontal: SIZES.md }}
+            renderItem={({ item, index }) => (
+              <JobComponent
+                application={item.data()}
+                width={width - SIZES.md * 2}
+                navigation={navigation}
               />
-            </View>
-          )}
-          data={applications}
-          style={{ marginHorizontal: SIZES.md }}
-          renderItem={({ item, index }) => (
-            <JobComponent
-              application={item.data()}
-              width={width - SIZES.md * 2}
-              navigation={navigation}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          ListFooterComponent={() => <View style={{ height: 90 }} />}
-        />
+            )}
+            keyExtractor={(item) => item.id}
+            ListFooterComponent={() => <View style={{ height: 90 }} />}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -113,7 +122,9 @@ const JobComponent: React.FC<JobComponentProps> = ({
       style={{ marginHorizontal: SIZES.md }}
       activeOpacity={0.5}
       onPress={() =>
-        navigation.navigate("JobApplicationDetailScreen", { application: application })
+        navigation.navigate("JobApplicationDetailScreen", {
+          application: application,
+        })
       }
     >
       <View style={styles.jobComponentContainer}>

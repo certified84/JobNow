@@ -40,7 +40,7 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [bookmarked, setBookmarked] = useState(route!.params.bookmarked);
 
-  const jobsRef = collection(firestore, "jobs");
+  const jobsRef = collection(firestore, route?.params.which ?? "jobs");
   const q = query(
     jobsRef,
     // where("communityId", "==", "")
@@ -89,6 +89,7 @@ const JobsScreen: React.FC<Props> = ({ route, navigation }) => {
               job={item.data()}
               width={width - SIZES.md * 2}
               navigation={navigation}
+              bookmarked={route!.params.title === "Bookmarks"}
             />
           )}
           keyExtractor={(item) => item.id}

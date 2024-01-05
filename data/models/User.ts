@@ -12,6 +12,7 @@ export type User = {
     link: string,
     location: string,
     verified: boolean,
+    bookmarks?: string[],
 }
 
 export const defaultUser: User = {
@@ -24,4 +25,5 @@ export const defaultUser: User = {
     link: "",
     location: "",
     verified: false,
+    bookmarks: [],
 }

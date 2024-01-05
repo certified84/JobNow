@@ -12,6 +12,9 @@ type StackParamList = {
     bookmarked: boolean;
     showBookmark: boolean;
     showBack: boolean;
+    which?: string;
+  };
+  BookmarksScreen: {
   };
   JobDetailScreen: {
     job: Job;

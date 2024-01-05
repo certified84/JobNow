@@ -10,6 +10,7 @@ interface JobProps {
   width: number;
   horizontal?: boolean | null;
   navigation: StackNavigation;
+  bookmarked?: boolean;
 }
 
 const JobComponent: React.FC<JobProps> = ({
@@ -17,6 +18,7 @@ const JobComponent: React.FC<JobProps> = ({
   width,
   horizontal,
   navigation,
+  bookmarked
 }) => {
   return (
     <TouchableOpacity
@@ -24,7 +26,7 @@ const JobComponent: React.FC<JobProps> = ({
         navigation.navigate("JobDetailScreen", {
           job: job,
           title: job.company,
-          bookmarked: job.bookmarked,
+          bookmarked: bookmarked,
           showBookmark: true,
         })
       }
@@ -45,14 +47,12 @@ const JobComponent: React.FC<JobProps> = ({
               style={{ width: 24, height: 24 }}
             />
           )}
-          {!job.companyLogo && (
-            <Briefcase />
-          )}
+          {!job.companyLogo && <Briefcase />}
         </View>
 
         {/* <TouchableOpacity activeOpacity={0.5} style={{ padding: 4 }}> */}
         <MaterialCommunityIcons
-          name="bookmark-outline"
+          name={bookmarked ? "bookmark" : "bookmark-outline"}
           size={30}
           color={COLORS.primary}
         />

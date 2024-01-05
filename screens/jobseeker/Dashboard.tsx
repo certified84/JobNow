@@ -16,6 +16,7 @@ import {
 import JobApplicationsScreen from "./job/JobApplications";
 import JobSeekerProfileScreen from "./ProfileScreen";
 import { useEffect } from "react";
+import BookmarksScreen from "./job/Bookmarks";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -84,7 +85,7 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
         />
         <Tab.Screen
           name="BookmarksScreen"
-          component={JobsScreen}
+          component={BookmarksScreen}
           initialParams={{
             title: "Bookmarks",
             bookmarked: false,

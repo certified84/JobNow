@@ -14,7 +14,7 @@ import {
 import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
 import Header from "../../../components/Header";
 import { StackParamList } from "../../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SceneMap, TabView } from "react-native-tab-view";
@@ -25,8 +25,11 @@ import { Briefcase } from "../../../assets/svg/Onboarding";
 import JobDetailComponent from "../../../components/JobDetailComponent";
 import { Job } from "../../../data/models/Job";
 import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
-import { firestore } from "../../../firebase";
+import { auth, firestore } from "../../../firebase";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { defaultUser } from "../../../data/models/User";
+import { Loader } from "../../../components/Loader";
 
 type ScreenRouteProp = RouteProp<StackParamList, "JobDetailScreen">;
 type NavProp = NavigationProp<StackParamList, "JobDetailScreen">;
@@ -39,7 +42,9 @@ type Props = {
 const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
   const job = route?.params.job!;
+  const user = auth.currentUser;
   const [values, setValues] = useState({
+    userData: defaultUser,
     bookmarked: route!.params.bookmarked,
     index: 0,
     routes: [
@@ -48,25 +53,36 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
     ],
   });
 
-  async function uploadData(job: Job) {
-    await addDoc(collection(firestore, "jobs"), job)
-      .then((snapshot) => {
-        updateDoc(snapshot, { id: snapshot.id });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        // setValue({
-        //   ...value,
-        //   loading: false,
-        // });
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Error",
-          textBody: "An error occurred. Please try again.",
-        });
+  const userRef = doc(firestore, "users", user!.uid);
+  const [userSnapshot, userLoading, userError] = useDocument(userRef);
+
+  useEffect(() => {
+    if (userSnapshot?.exists) {
+      setValues({
+        ...values,
+        userData: { ...defaultUser, ...userSnapshot.data() },
       });
+    }
+  }, [userSnapshot]);
+
+  async function bookmarkJob(bookmarked: boolean) {
+    let bookmarks = values.userData.bookmarks!;
+    bookmarked
+      ? bookmarks.push(job.id)
+      : bookmarks.splice(bookmarks.indexOf(job.id), 1);
+    console.log("Bookmarks: ", bookmarks)
+    await updateDoc(doc(firestore, "users", user!.uid), {
+      bookmarks: bookmarks,
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please try again.",
+      });
+    });
   }
 
   const renderScene = SceneMap({
@@ -75,15 +91,17 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   });
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <Loader showLoader={userLoading}/>
       <View style={styles.innerContainer}>
         <Header
           title={route!.params.title}
           navigation={navigation}
           showBookmark={route!.params.showBookmark}
           bookmarked={values.bookmarked}
-          onBookmarkPress={() =>
-            setValues({ ...values, bookmarked: !values.bookmarked })
-          }
+          onBookmarkPress={() => {
+            setValues({ ...values, bookmarked: !values.bookmarked });
+            bookmarkJob(!values.bookmarked);
+          }}
         />
         {/* <ScrollView style={{ flex: 1 }}> */}
         <JobDetailComponent job={job} />
