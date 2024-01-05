@@ -157,6 +157,7 @@ const LoginScreen = () => {
           mode="outlined"
           placeholder="Email"
           theme={{ roundness: SIZES.xs }}
+          autoCorrect={false}
           keyboardType="email-address"
           value={value.email}
           onChangeText={(text) => {
@@ -180,6 +181,7 @@ const LoginScreen = () => {
         <TextInput
           mode="outlined"
           placeholder="Password"
+          autoCorrect={false}
           theme={{ roundness: SIZES.xs }}
           value={value.password}
           onChangeText={(text) => {

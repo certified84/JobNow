@@ -39,6 +39,7 @@ const ForgotPasswordScreen = () => {
         <TextInput
           mode="outlined"
           placeholder="Email"
+          autoCorrect={false}
           theme={{ roundness: SIZES.xs }}
           style={[styles.inputField, { marginTop: SIZES.xl }]}
           activeOutlineColor={COLORS.primary}

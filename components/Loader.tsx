@@ -42,7 +42,7 @@ export const Loader: React.FC<LoaderProps> = ({ showLoader }) => {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#969696" }}>
+    // <View style={{ flex: 1, backgroundColor: "#969696" }}>
       <Modal
         isVisible={showLoader}
         animationIn="zoomIn"
@@ -57,6 +57,6 @@ export const Loader: React.FC<LoaderProps> = ({ showLoader }) => {
           <LoaderIcon />
         </Animated.View>
       </Modal>
-    </View>
+    // </View>
   );
 };

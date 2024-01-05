@@ -152,6 +152,7 @@ const SignupScreen: React.FC<Props> = ({route, navigation}) => {
           placeholder="Name"
           theme={{ roundness: SIZES.xs }}
           value={value.name}
+          autoCorrect={false}
           onChangeText={(text) => {
             if (text !== "") {
               setErrors({ ...errors, name: false });
@@ -173,6 +174,7 @@ const SignupScreen: React.FC<Props> = ({route, navigation}) => {
           placeholder="Email"
           keyboardType="email-address"
           theme={{ roundness: SIZES.xs }}
+          autoCorrect={false}
           value={value.email}
           onChangeText={(text) => {
             if (text !== "") {
@@ -197,6 +199,7 @@ const SignupScreen: React.FC<Props> = ({route, navigation}) => {
           placeholder="Password"
           theme={{ roundness: SIZES.xs }}
           value={value.password}
+          autoCorrect={false}
           onChangeText={(text) => {
             if (text !== "") {
               setErrors({ ...errors, password: false });
