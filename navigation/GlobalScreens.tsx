@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
-import { NotificationsScreen, OnboardingContinueScreen, OnboardingScreen } from "../screens";
+import { FAQScreen, ProfileScreen, NotificationsScreen, OnboardingContinueScreen, OnboardingScreen } from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +25,20 @@ const GlobalScreens = () => {
       <Stack.Screen
         name="NotificationsScreen"
         component={NotificationsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="FAQScreen"
+        component={FAQScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
         options={{
           headerShown: false,
         }}

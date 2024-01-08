@@ -6,7 +6,9 @@ import { Application, Job } from "../data/models/Job";
 type StackParamList = {
   ExpertiseSelectionScreen: {};
   HomeScreen: {};
-  NotificationsScreen: {};
+  NotificationsScreen
+  ProfileScreen
+  FAQScreen
   JobsScreen: {
     title: string;
     bookmarked: boolean;
@@ -36,6 +38,9 @@ type StackParamList = {
     application: Application;
     title: string;
   };
+  SettingsScreen: {};
+  ProfileScreen: {}
+  LoginScreen;
 };
 
 type ScreenRouteProp = RouteProp<StackParamList>;

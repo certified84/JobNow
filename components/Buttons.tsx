@@ -14,23 +14,6 @@ interface ButtonProps {
   onPress?: () => void;
 }
 
-export const AuthButton: React.FC<ButtonProps> = ({
-  text,
-  textColor,
-  buttonColor,
-  onPress,
-}) => {
-  return (
-    <TouchableOpacity
-      style={styles.authButtonContainer}
-      onPress={onPress}
-      activeOpacity={0.5}
-    >
-      <Text style={{ ...TYPOGRAPHY.h2, fontSize: SIZES.md }}>{text}</Text>
-    </TouchableOpacity>
-  );
-};
-
 export const DefaultButton: React.FC<ButtonProps> = ({
   onPress,
   buttonTitle,

@@ -12,11 +12,14 @@ import {
   Briefcase,
   PersonSelected,
   Person,
+  SettingsSelected,
+  Settings,
 } from "../../assets/svg/Navigation";
 import JobApplicationsScreen from "./job/JobApplications";
-import JobSeekerProfileScreen from "./ProfileScreen";
+import JobSeekerProfileScreen from "../global/settings/ProfileScreen";
 import { useEffect } from "react";
 import BookmarksScreen from "./job/Bookmarks";
+import SettingsScreen from "../global/settings/Settings";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -127,12 +130,12 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           }}   */}
         {/* /> */}
         <Tab.Screen
-          name="JobSeekerProfileScreen"
-          component={JobSeekerProfileScreen}
+          name="SettingsScreen"
+          component={SettingsScreen}
           options={{
             tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabBarIcon}>
-                {focused ? <PersonSelected /> : <Person />}
+                {focused ? <SettingsSelected /> : <Settings />}
                 <Text style={{ ...styles.tabBarLabel, color: color }}>
                   Profile
                 </Text>

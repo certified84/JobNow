@@ -6,9 +6,8 @@ import {
   Platform,
 } from "react-native";
 import { COLORS, SIZES, TYPOGRAPHY } from "../theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackNavigation } from "../types";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface HeaderProps {
   title: string;

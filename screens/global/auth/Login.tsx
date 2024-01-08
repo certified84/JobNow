@@ -140,6 +140,20 @@ const LoginScreen = () => {
           textBody: "An error occurred. Please try again.",
         });
       }
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      setValue({
+        ...value,
+        loading: false,
+      });
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please try again.",
+      });
     });
   }
 

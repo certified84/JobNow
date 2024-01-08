@@ -1,7 +1,7 @@
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import { COLORS, TYPOGRAPHY } from "../../theme";
+import { COLORS, TYPOGRAPHY } from "../../../theme";
 
-const JobSeekerProfileScreen = () => {
+const ProfileScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -11,6 +11,6 @@ const JobSeekerProfileScreen = () => {
   );
 };
 
-export default JobSeekerProfileScreen;
+export default ProfileScreen;
 
 const styles = StyleSheet.create({});
