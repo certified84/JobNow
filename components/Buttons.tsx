@@ -40,7 +40,12 @@ export const ActionButton: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={{ ...styles.actionBtn, ...style, backgroundColor: buttonColor }}
+      style={{
+        ...styles.actionBtn,
+        ...style,
+        backgroundColor: buttonColor,
+        opacity: disabled ? 0.5 : 1,
+      }}
       activeOpacity={0.5}
       onPress={onPress}
     >

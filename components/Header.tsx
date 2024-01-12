@@ -16,6 +16,7 @@ interface HeaderProps {
   showBack?: boolean;
   bookmarked?: boolean;
   onBookmarkPress?: () => void;
+  onBackPress?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -23,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({
   navigation,
   showBookmark,
   showBack = true,
+  onBackPress,
   bookmarked,
   onBookmarkPress,
 }) => (
@@ -30,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({
     <View style={styles.innerContainer}>
       <TouchableOpacity
         style={{ padding: 8, paddingStart: 0, opacity: showBack ? 1 : 0 }}
-        onPress={() => navigation.goBack()}
+        onPress={() => onBackPress ? onBackPress() : navigation.goBack()}
         disabled={!showBack}
       >
         <MaterialIcons

@@ -35,7 +35,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { ActionButton, DefaultButton } from "../../../components/Buttons";
 import { TermsCondition } from "../../../assets/svg/Settings";
 
-type IconKeys = "FAQs" | "Privacy Policy" | "Terms of Use";
+type IconKeys = "faqs" | "privacy" | "terms";
 
 interface IconProps {
   which: IconKeys;
@@ -43,13 +43,13 @@ interface IconProps {
 
 const Icon: React.FC<IconProps> = ({ which }) => {
   const Icons = {
-    FAQs: () => (
+    faqs: () => (
       <MaterialIcons name="help" size={24} color={COLORS.primary} />
     ),
-    "Privacy Policy": () => (
+    "privacy": () => (
       <MaterialIcons name="shield" size={24} color={COLORS.primary} />
     ),
-    "Terms of Use": () => (
+    "terms": () => (
       <TermsCondition />
     ),
   };
@@ -58,21 +58,25 @@ const Icon: React.FC<IconProps> = ({ which }) => {
 };
 
 type Data = {
-  title: IconKeys;
+  title: string;
   subtitle: string;
+  which: IconKeys;
 };
 
 const data: Data[] = [
   {
     title: "FAQs",
+    which: "faqs",
     subtitle: "Edit your profile",
   },
   {
     title: "Privacy Policy",
+    which: "privacy",
     subtitle: "Notifications settings",
   },
   {
     title: "Terms of Use",
+    which: "terms",
     subtitle: "Get support and send feedback",
   },
 ];
@@ -86,16 +90,16 @@ type Props = {
 };
 
 const FAQScreen: React.FC<Props> = ({ route, navigation }) => {
-  const action = ({ which }) => {
+  const action = ({ which }: {which: IconKeys}) => {
     switch (which) {
-      case "Profile":
-        navigation?.navigate("ProfileScreen");
+      case "faqs":
+
         break;
-      case "Notifications":
-        navigation?.navigate("NotificationsScreen");
+      case "privacy":
+
         break;
-      case "FAQs & Support":
-        navigation?.navigate("FAQScreen");
+      case "terms":
+
         break;
     }
   };
@@ -118,7 +122,7 @@ const FAQScreen: React.FC<Props> = ({ route, navigation }) => {
           >
             <View style={{ flexDirection: "row" }}>
               <View style={styles.iconContainer}>
-                <Icon which={item.title} />
+                <Icon which={item.which} />
               </View>
               <View style={{ marginStart: SIZES.sm, justifyContent: "center" }}>
                 <Text style={{ ...TYPOGRAPHY.h4, marginBottom: 4 }}>

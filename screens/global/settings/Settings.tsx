@@ -34,7 +34,7 @@ import { defaultUser } from "../../../data/models/User";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionButton, DefaultButton } from "../../../components/Buttons";
 
-type IconKeys = "Profile" | "Notifications" | "FAQs & Support";
+type IconKeys = "profile" | "notifications" | "faqs";
 
 interface IconProps {
   which: IconKeys;
@@ -42,13 +42,13 @@ interface IconProps {
 
 const Icon: React.FC<IconProps> = ({ which }) => {
   const Icons = {
-    Profile: () => (
+    profile: () => (
       <MaterialIcons name="person" size={24} color={COLORS.primary} />
     ),
-    Notifications: () => (
+    notifications: () => (
       <MaterialIcons name="notifications" size={24} color={COLORS.primary} />
     ),
-    "FAQs & Support": () => (
+    faqs: () => (
       <MaterialIcons name="help" size={24} color={COLORS.primary} />
     ),
   };
@@ -56,23 +56,21 @@ const Icon: React.FC<IconProps> = ({ which }) => {
   return <CurrentIcon />;
 };
 
-type Data = {
-  title: IconKeys;
-  subtitle: string;
-};
-
-const data: Data[] = [
+const data: any[] = [
   {
     title: "Profile",
     subtitle: "Edit your profile",
+    which: "profile"
   },
   {
     title: "Notifications",
     subtitle: "Notifications settings",
+    which: "notifications"
   },
   {
     title: "FAQs & Support",
     subtitle: "Get support and send feedback",
+    which: "faqs"
   },
 ];
 
@@ -85,15 +83,15 @@ type Props = {
 };
 
 const SettingsScreen: React.FC<Props> = ({ route, navigation }) => {
-  const action = ({ which }) => {
+  const action = ({ which }: {which: IconKeys}) => {
     switch (which) {
-      case "Profile":
+      case "profile":
         navigation?.navigate("ProfileScreen");
         break;
-      case "Notifications":
+      case "notifications":
         navigation?.navigate("NotificationsScreen");
         break;
-      case "FAQs & Support":
+      case "faqs":
         navigation?.navigate("FAQScreen");
         break;
     }
@@ -112,13 +110,13 @@ const SettingsScreen: React.FC<Props> = ({ route, navigation }) => {
         {data.map((item, index) => (
           <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() =>action({which: item.title})}
+            onPress={() =>action({which: item.which})}
             key={index}
             style={styles.itemContainer}
           >
             <View style={{ flexDirection: "row" }}>
               <View style={styles.iconContainer}>
-                <Icon which={item.title} />
+                <Icon which={item.which} />
               </View>
               <View style={{ marginStart: SIZES.sm, justifyContent: "center" }}>
                 <Text style={{ ...TYPOGRAPHY.h4, marginBottom: 4 }}>
