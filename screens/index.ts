@@ -16,7 +16,8 @@ import JobApplicationScreen from "./jobseeker/job/JobApplication";
 import JobSeekerDashboard from "./jobseeker/Dashboard";
 import JobApplicationsScreen from "./jobseeker/job/JobApplications";
 import JobApplicationDetailScreen from "./jobseeker/job/JobApplicationDetail";
-import ProfileScreen from "./global/settings/ProfileScreen";
+import ProfileScreen from "./global/settings/Profile";
+import BookmarksScreen from './jobseeker/job/Bookmarks';
 
 export {
   OnboardingScreen,
@@ -35,5 +36,5 @@ export {
   JobApplicationDetailScreen,
   ProfileScreen,
   SettingsScreen,
-  FAQScreen,
+  FAQScreen,BookmarksScreen
 };

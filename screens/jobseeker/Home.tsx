@@ -64,7 +64,7 @@ const JobSeekerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity
               activeOpacity={0.6}
-              onPress={() => navigation.navigate("JobSeekerProfileScreen")}
+              onPress={() => navigation.navigate("ProfileScreen")}
             >
               {user.photoURL ? (
                 <Avatar.Image size={50} source={{ uri: user.photoURL }} />

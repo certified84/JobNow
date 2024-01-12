@@ -2,8 +2,6 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Props } from "../../types";
 import { COLORS, SIZES } from "../../theme";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import JobSeekerHomeScreen from "./Home";
-import JobsScreen from "./job/Jobs";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import {
   Bookmark,
@@ -15,16 +13,15 @@ import {
   SettingsSelected,
   Settings,
 } from "../../assets/svg/Navigation";
-import JobApplicationsScreen from "./job/JobApplications";
-import JobSeekerProfileScreen from "../global/settings/ProfileScreen";
 import { useEffect } from "react";
+import JobSeekerHomeScreen from "./Home";
+import JobApplicationsScreen from "./job/JobApplications";
 import BookmarksScreen from "./job/Bookmarks";
 import SettingsScreen from "../global/settings/Settings";
 
 const Tab = createMaterialBottomTabNavigator();
 
 const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
-
   useEffect(() => {
     navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault();
@@ -42,8 +39,8 @@ const JobSeekerDashboard: React.FC<Props> = ({ route, navigation }) => {
           backgroundColor: COLORS.white,
           position: "absolute",
           elevation: 0,
-            // height: "10%",
-            paddingBottom: 8
+          // height: "10%",
+          paddingBottom: 8,
         }}
         screenListeners={{
           tabPress: (e) => {},
