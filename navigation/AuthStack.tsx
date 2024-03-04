@@ -10,6 +10,7 @@ import {
   ForgotPasswordScreen,
   LoginScreen,
   SignupScreen,
+  EmployerSignupScreen,
 } from "../screens";
 import { COLORS } from "../theme";
 import { StackProps } from ".";
@@ -46,6 +47,13 @@ const AuthStack: React.FC<StackProps> = ({ customHeaderTitleStyle }) => {
         <Stack.Screen
           name="SignupScreen"
           component={SignupScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EmployerSignupScreen"
+          component={EmployerSignupScreen}
           options={{
             headerShown: false,
           }}

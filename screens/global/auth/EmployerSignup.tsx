@@ -43,7 +43,7 @@ type Props = {
   navigation: NavProp;
 };
 
-const SignupScreen: React.FC<Props> = ({ route, navigation }) => {
+const EmployerSignupScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
 
   const [value, setValue] = useState({
@@ -133,7 +133,7 @@ const SignupScreen: React.FC<Props> = ({ route, navigation }) => {
           title: "Email verification",
           textBody: "A verification email has been sent to your email address.",
         });
-        navigation.navigate("ExpertiseSelectionScreen");
+        navigation.navigate("CompanyProfileScreen");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -157,11 +157,13 @@ const SignupScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <View style={{ flex: 1, margin: SIZES.md, paddingTop: SIZES.lg }}>
         <Text style={styles.titleText}>Sign up</Text>
-        <Text style={styles.subtitleText}>Find your dream job with us</Text>
+        <Text style={styles.subtitleText}>
+          Find your dream employee with us
+        </Text>
 
         <TextInput
           mode="outlined"
-          placeholder="Name"
+          placeholder="Company Name"
           theme={{ roundness: SIZES.xs }}
           value={value.name}
           autoCorrect={false}
@@ -329,4 +331,4 @@ const SignupScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-export default SignupScreen;
+export default EmployerSignupScreen;

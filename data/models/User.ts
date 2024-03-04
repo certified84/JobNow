@@ -14,6 +14,9 @@ export type User = {
     location: string,
     verified: boolean,
     bookmarks?: string[],
+    country?: string,
+    address?: string,
+    type?: string,
 }
 
 export const defaultUser: User = {

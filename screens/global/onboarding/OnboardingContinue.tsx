@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../../../types";
 import { Toast, ALERT_TYPE, Dialog } from "react-native-alert-notification";
+import { Option } from "../../../components/AuthOption";
 
 export default function OnboardingContinueScreen() {
   const navigation = useNavigation<StackNavigation>();
@@ -45,11 +46,7 @@ export default function OnboardingContinueScreen() {
         onPress={() => {
           selected === 0
             ? navigation.navigate("SignupScreen")
-            : Toast.show({
-                type: ALERT_TYPE.INFO,
-                title: "Coming soon",
-                textBody: "This feature isn't available yet",
-              });
+            : navigation.navigate("EmployerSignupScreen");
         }}
         style={{ ...styles.btnContinue, opacity: selected === -1 ? 0.5 : 1 }}
       >
@@ -58,41 +55,6 @@ export default function OnboardingContinueScreen() {
     </View>
   );
 }
-
-interface OptionProps {
-  title: string;
-  desc: string;
-  icon: React.ReactNode;
-  isSelected: boolean;
-  color: string;
-  onPress?: () => void;
-}
-
-const Option: React.FC<OptionProps> = ({
-  title,
-  desc,
-  icon,
-  isSelected,
-  color,
-  onPress,
-}) => {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.5}
-      style={{
-        ...styles.optionContainer,
-        borderColor: isSelected ? "#3C8AFF" : "#F0F0F0",
-      }}
-    >
-      <View style={{ ...styles.optionIconContainer, backgroundColor: color }}>
-        {icon}
-      </View>
-      <Text style={styles.optionTitle}>{title}</Text>
-      <Text style={{ ...TYPOGRAPHY.p, textAlign: "center" }}>{desc}</Text>
-    </TouchableOpacity>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -114,23 +76,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: "100%",
-  },
-  optionContainer: {
-    flex: 0.43,
-    borderWidth: 4,
-    borderRadius: SIZES.md,
-    paddingVertical: SIZES.xl,
-    paddingHorizontal: SIZES.lg,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  optionIconContainer: {
-    padding: SIZES.md,
-    borderRadius: 50,
-  },
-  optionTitle: {
-    ...TYPOGRAPHY.h3,
-    marginVertical: SIZES.xxs,
   },
   btnContinue: {
     marginVertical: SIZES.xl,

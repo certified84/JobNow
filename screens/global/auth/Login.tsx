@@ -14,10 +14,14 @@ import {
   AppleButton,
   GoogleButton,
 } from "../../../components/Buttons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+} from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
-import { StackNavigation } from "../../../types";
+import { StackNavigation, StackParamList } from "../../../types";
 // import { auth } from "../../../../firebase";
 import {
   signInWithEmailAndPassword,
@@ -32,12 +36,22 @@ import { is_email } from "../../../constants";
 import { doc, getDoc } from "firebase/firestore";
 import { User } from "../../../data/models/User";
 import { Ionicons } from "@expo/vector-icons";
+import ReactNativeModal from "react-native-modal";
+import { Option } from "../../../components/AuthOption";
+import { Briefcase, User as UserIcon } from "../../../assets/svg/Onboarding";
 // import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-const LoginScreen = () => {
-  const navigation = useNavigation<StackNavigation>();
-  const { width } = useWindowDimensions();
+type ScreenRouteProp = RouteProp<StackParamList, "LoginScreen">;
+type NavProp = NavigationProp<StackParamList, "LoginScreen">;
+
+type Props = {
+  route?: ScreenRouteProp;
+  navigation: NavProp;
+};
+
+const LoginScreen: React.FC<Props> = ({ route, navigation }) => {
+  const { width, height } = useWindowDimensions();
   //   const provider = new GoogleAuthProvider();
 
   //   const [{}, userCredential] = useSignInWithGoogle(auth);
@@ -46,11 +60,12 @@ const LoginScreen = () => {
   //     webClientId: '535570809491-rfd6nbbqpi8178tpdcbe079k6qhlscmm.apps.googleusercontent.com',
   // });
 
-  const [value, setValue] = useState({
+  const [values, setValues] = useState({
     email: "",
     password: "",
     loading: false,
     showPassword: false,
+    showDialog: false,
   });
 
   const [errors, setErrors] = useState({
@@ -58,10 +73,10 @@ const LoginScreen = () => {
     password: false,
   });
 
-  const disabled = value.email === "" || value.password === "";
+  const disabled = values.email === "" || values.password === "";
 
   async function signInWithGoogle() {
-    setValue({ ...value, loading: true });
+    setValues({ ...values, loading: true });
     // await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
     // .then((has) => {
     //     if (!has) return
@@ -77,8 +92,8 @@ const LoginScreen = () => {
     // const credential = GoogleAuthProvider.credential(idToken);
 
     // await signInWithCredential(auth, userCredential)
-    setValue({
-      ...value,
+    setValues({
+      ...values,
       //   message: userCredential.user.displayName,
       loading: false,
     });
@@ -95,13 +110,13 @@ const LoginScreen = () => {
   }
 
   async function signIn() {
-    if (!is_email(value.email)) {
+    if (!is_email(values.email)) {
       setErrors({ ...errors, email: true });
       return;
     }
 
-    setValue({ ...value, loading: true });
-    await signInWithEmailAndPassword(auth, value.email, value.password)
+    setValues({ ...values, loading: true });
+    await signInWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
         const user = userCredential.user;
         fetchUserData(user);
@@ -110,8 +125,8 @@ const LoginScreen = () => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-        setValue({
-          ...value,
+        setValues({
+          ...values,
           loading: false,
         });
         Toast.show({
@@ -124,42 +139,55 @@ const LoginScreen = () => {
 
   async function fetchUserData(user: FirebaseUser) {
     const userRef = doc(firestore, "users", user.uid);
-    getDoc(userRef).then((snapshot) => {
-      setValue({ ...value, loading: false });
-      if (snapshot.exists()) {
-        const userData = snapshot.data() as User;
-        if (userData.skills.length <= 0) {
-          navigation.navigate("ExpertiseSelectionScreen");
+    getDoc(userRef)
+      .then((snapshot) => {
+        setValues({ ...values, loading: false });
+        if (snapshot.exists()) {
+          const userData = snapshot.data() as User;
+          console.log(userData);
+          if (userData.type !== null) {
+            if (userData.type === "employer")
+              navigation.navigate("EmployerDashboard");
+            else navigation.navigate("CompanyProfileScreen");
+          } else if (userData.skills.length <= 0) {
+            navigation.navigate("ExpertiseSelectionScreen");
+          } else {
+            navigation.navigate("JobSeekerDashboard");
+          }
         } else {
-          navigation.navigate("JobSeekerDashboard");
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "An error occurred. Please try again.",
+          });
         }
-      } else {
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setValues({
+          ...values,
+          loading: false,
+        });
         Toast.show({
           type: ALERT_TYPE.DANGER,
           title: "Error",
           textBody: "An error occurred. Please try again.",
         });
-      }
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-      setValue({
-        ...value,
-        loading: false,
       });
-      Toast.show({
-        type: ALERT_TYPE.DANGER,
-        title: "Error",
-        textBody: "An error occurred. Please try again.",
-      });
-    });
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Loader showLoader={value.loading} />
+      <Loader showLoader={values.loading} />
+      <SignupOptionDialog
+        showDialog={values.showDialog}
+        setShowDialog={(value) => setValues({ ...values, showDialog: value })}
+        width={width}
+        height={height}
+        navigation={navigation}
+      />
 
       <View style={{ flex: 1, margin: SIZES.md, paddingTop: SIZES.lg }}>
         <Text style={styles.titleText}>Sign in</Text>
@@ -173,14 +201,14 @@ const LoginScreen = () => {
           theme={{ roundness: SIZES.xs }}
           autoCorrect={false}
           keyboardType="email-address"
-          value={value.email}
+          value={values.email}
           onChangeText={(text) => {
             if (text !== "") {
               setErrors({ ...errors, email: false });
             } else {
               setErrors({ ...errors, email: true });
             }
-            setValue({ ...value, email: text });
+            setValues({ ...values, email: text });
           }}
           style={{ ...styles.inputField, marginTop: SIZES.xl }}
           activeOutlineColor={COLORS.primary}
@@ -197,24 +225,26 @@ const LoginScreen = () => {
           placeholder="Password"
           autoCorrect={false}
           theme={{ roundness: SIZES.xs }}
-          value={value.password}
+          value={values.password}
           onChangeText={(text) => {
             if (text !== "") {
               setErrors({ ...errors, password: false });
             } else if (text === "") {
               setErrors({ ...errors, password: true });
             }
-            setValue({ ...value, password: text });
+            setValues({ ...values, password: text });
           }}
-          secureTextEntry={!value.showPassword}
+          secureTextEntry={!values.showPassword}
           right={
             <TextInput.Icon
               icon={() => (
                 <TouchableOpacity
-                  onPress={() => setValue({...value, showPassword: !value.showPassword})}
+                  onPress={() =>
+                    setValues({ ...values, showPassword: !values.showPassword })
+                  }
                   activeOpacity={0.5}
                 >
-                  {value.showPassword ? (
+                  {values.showPassword ? (
                     <Ionicons
                       name="eye-off"
                       color={COLORS.primary}
@@ -246,7 +276,7 @@ const LoginScreen = () => {
           style={styles.forgotPasswordButton}
           activeOpacity={0.5}
           onPress={() => {
-            navigation.navigate("ForgotPasswordScreen");
+            navigation?.navigate("ForgotPasswordScreen");
           }}
         >
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
@@ -305,7 +335,8 @@ const LoginScreen = () => {
               activeOpacity={0.8}
               style={{ marginHorizontal: SIZES.xxs }}
               onPress={() => {
-                navigation.navigate("SignupScreen");
+                setValues({ ...values, showDialog: true });
+                // navigation.navigate("SignupScreen");
               }}
             >
               <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.primary }}>
@@ -320,6 +351,74 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
+
+interface ISignupOptionDialogProps {
+  showDialog: boolean;
+  setShowDialog: (show: boolean) => void;
+  action?: () => void;
+  width: number;
+  height: number;
+  navigation: StackNavigation;
+}
+
+const SignupOptionDialog: React.FC<ISignupOptionDialogProps> = ({
+  showDialog,
+  setShowDialog,
+  action,
+  width,
+  height,
+  navigation,
+}) => {
+  return (
+    <ReactNativeModal
+      isVisible={showDialog}
+      onBackdropPress={() => setShowDialog(false)}
+      animationIn="zoomIn"
+      animationOut="zoomOut"
+      backdropOpacity={0.5}
+      deviceWidth={width}
+      deviceHeight={height}
+      onSwipeComplete={(gestureState) => setShowDialog(false)}
+    >
+      <View style={styles.modalContainer}>
+        <Text style={styles.title}>Select an option</Text>
+        <Text style={styles.description}>
+          Choose whether you’re an employer in search of a job, or an employer
+          in search of an employee.
+        </Text>
+
+        <View style={styles.line2} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Option
+            title="Job Seeker"
+            desc="I am in search of a job"
+            color="#F3F8FF"
+            icon={<Briefcase />}
+            onPress={() => {
+              setShowDialog(false);
+              navigation.navigate("SignupScreen");
+            }}
+          />
+          <Option
+            title="Employer"
+            desc="I am looking for employees"
+            color="#FFF0E6"
+            icon={<UserIcon />}
+            onPress={() => {
+              setShowDialog(false);
+              navigation.navigate("EmployerSignupScreen");
+            }}
+          />
+        </View>
+      </View>
+    </ReactNativeModal>
+  );
+};
 
 export const styles = StyleSheet.create({
   container: {
@@ -371,4 +470,22 @@ export const styles = StyleSheet.create({
     marginBottom: SIZES.md,
   },
   line: { flex: 0.42, height: 1, backgroundColor: COLORS.darkGray },
+  title: { ...TYPOGRAPHY.h1, margin: SIZES.xxs, alignSelf: "center" },
+  description: {
+    ...TYPOGRAPHY.p,
+    fontSize: SIZES.sm,
+    textAlign: "center",
+  },
+  line2: {
+    height: 1,
+    width: "100%",
+    backgroundColor: COLORS.lightGray,
+    marginVertical: SIZES.sm,
+  },
+  modalContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.md,
+    padding: 40,
+    paddingHorizontal: SIZES.md,
+  },
 });

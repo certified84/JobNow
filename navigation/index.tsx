@@ -3,8 +3,8 @@ import { COLORS, SIZES } from "../theme";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import GlobalScreens from "./GlobalScreens";
 import JobSeekerScreens from "./JobSeekerScreens";
-import AuthStack from "./AuthStack";
 import AuthScreens from "./AuthScreens";
+import EmployerScreens from "./EmployerScreens";
 
 const Stack = createStackNavigator();
 
@@ -21,7 +21,7 @@ const index = () => {
         {AuthScreens()}
         {GlobalScreens()}
         {JobSeekerScreens()}
-        {/* {EmployerScreens()} */}
+        {EmployerScreens()}
       </Stack.Navigator>
     </AlertNotificationRoot>
   );

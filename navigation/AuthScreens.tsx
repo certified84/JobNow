@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
-import { ForgotPasswordScreen, LoginScreen, SignupScreen } from "../screens";
+import { EmployerSignupScreen, ForgotPasswordScreen, LoginScreen, SignupScreen } from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -17,6 +17,13 @@ const AuthScreens = () => {
       <Stack.Screen
         name="SignupScreen"
         component={SignupScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EmployerSignupScreen"
+        component={EmployerSignupScreen}
         options={{
           headerShown: false,
         }}

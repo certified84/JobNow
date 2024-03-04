@@ -27,7 +27,6 @@ import {
 import { auth, firestore } from "../../../firebase";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { Job } from "../../../data/models/Job";
-import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
 import { Loader } from "../../../components/Loader";
 import EmptyDesign from "../../../components/EmptyDesign";
 import { defaultUser } from "../../../data/models/User";

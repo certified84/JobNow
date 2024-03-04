@@ -125,6 +125,8 @@ const ProfileScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [snapshot]);
 
+  useEffect(() => console.log(values.loading), [values.loading])
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -137,8 +139,6 @@ const ProfileScreen: React.FC<Props> = ({ route, navigation }) => {
       setValues({ ...values, image: result.assets[0].uri });
     }
   };
-
-  useEffect(() => console.log(values.loading), [values.loading])
 
   async function uploadImage() {
     console.log("Upload Image: ", values.image);

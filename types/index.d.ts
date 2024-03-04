@@ -4,7 +4,9 @@ import { RouteProp, NavigationProp } from "@react-navigation/native";
 import { Application, Job } from "../data/models/Job";
 
 type StackParamList = {
+  SignupScreen: {};
   ExpertiseSelectionScreen: {};
+  
   HomeScreen: {};
   NotificationsScreen
   ProfileScreen

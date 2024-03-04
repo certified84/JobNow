@@ -42,7 +42,7 @@ type Props = {
   navigation?: NavProp;
 };
 
-interface ValuesProps {
+interface IValuesProps {
   bookmarked?: boolean;
   name: string;
   email: string;
@@ -60,7 +60,7 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
   const user = auth.currentUser;
   const job = route?.params.job!;
   const splitIndex = user?.displayName?.indexOf(" ");
-  const [values, setValues] = useState<ValuesProps>({
+  const [values, setValues] = useState<IValuesProps>({
     bookmarked: route?.params.bookmarked,
     name: "",
     email: "",
@@ -94,13 +94,13 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
       (res) => {
         if (res.assets !== null) {
           setValues({ ...values, file: res.assets[0].uri });
-          uploadResume(res.assets[0].uri, user!.uid);
+          uploadResume(res.assets[0].uri);
         }
       }
     );
   };
 
-  async function uploadResume(resumeUri: string, id: string) {
+  async function uploadResume(resumeUri: string) {
     try {
       const { uri } = await FileSystem.getInfoAsync(resumeUri);
       const blob: Blob = await new Promise((resolve, reject) => {
