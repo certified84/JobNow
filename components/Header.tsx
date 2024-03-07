@@ -17,6 +17,7 @@ interface HeaderProps {
   bookmarked?: boolean;
   onBookmarkPress?: () => void;
   onBackPress?: () => void;
+  which?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -27,12 +28,13 @@ const Header: React.FC<HeaderProps> = ({
   onBackPress,
   bookmarked,
   onBookmarkPress,
+  which,
 }) => (
   <View>
     <View style={styles.innerContainer}>
       <TouchableOpacity
         style={{ padding: 8, paddingStart: 0, opacity: showBack ? 1 : 0 }}
-        onPress={() => onBackPress ? onBackPress() : navigation.goBack()}
+        onPress={() => (onBackPress ? onBackPress() : navigation.goBack())}
         disabled={!showBack}
       >
         <MaterialIcons
@@ -49,11 +51,19 @@ const Header: React.FC<HeaderProps> = ({
         onPress={onBookmarkPress}
         style={{ opacity: showBookmark ? 1 : 0, padding: 8, paddingEnd: 0 }}
       >
-        <MaterialCommunityIcons
-          name={bookmarked ? "bookmark" : "bookmark-outline"}
-          size={24}
-          color={bookmarked ? COLORS.primary : COLORS.black}
-        />
+        {which === "post" ? (
+          <MaterialCommunityIcons
+            name={"plus"}
+            size={24}
+            color={bookmarked ? COLORS.primary : COLORS.black}
+          />
+        ) : (
+          <MaterialCommunityIcons
+            name={bookmarked ? "bookmark" : "bookmark-outline"}
+            size={24}
+            color={bookmarked ? COLORS.primary : COLORS.black}
+          />
+        )}
       </TouchableOpacity>
     </View>
     <View style={styles.line} />

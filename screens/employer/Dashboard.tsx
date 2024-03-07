@@ -12,12 +12,14 @@ import {
   Person,
   SettingsSelected,
   Settings,
+  Post,
+  PostSelected,
 } from "../../assets/svg/Navigation";
 import { useEffect } from "react";
 import EmployerHomeScreen from "./Home";
-// import JobApplicationsScreen from "./job/JobApplications";
-// import BookmarksScreen from "./job/Bookmarks";
 import SettingsScreen from "../global/settings/Settings";
+import EmployerApplicationsScreen from "./Applications";
+import EmployerPostsScreen from "./Posts";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -66,7 +68,7 @@ const EmployerDashboard: React.FC<Props> = ({ route, navigation }) => {
         />
         <Tab.Screen
           name="EmployerApplicationsScreen"
-          component={EmployerHomeScreen}
+          component={EmployerApplicationsScreen}
           initialParams={{
             bookmark: false,
             showBookmark: false,
@@ -85,7 +87,7 @@ const EmployerDashboard: React.FC<Props> = ({ route, navigation }) => {
         />
         <Tab.Screen
           name="EmployerPostsScreen"
-          component={EmployerHomeScreen}
+          component={EmployerPostsScreen}
           initialParams={{
             title: "Posts",
             bookmarked: false,
@@ -95,7 +97,7 @@ const EmployerDashboard: React.FC<Props> = ({ route, navigation }) => {
           options={{
             tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabBarIcon}>
-                {focused ? <BookmarkSelected /> : <Bookmark />}
+                {focused ? <PostSelected /> : <Post />}
                 <Text style={{ ...styles.tabBarLabel, color: color }}>
                   Posts
                 </Text>
@@ -103,29 +105,6 @@ const EmployerDashboard: React.FC<Props> = ({ route, navigation }) => {
             ),
           }}
         />
-        {/* <Tab.Screen
-          name="ChatScreen"
-          component={ChatScreen}
-          options={{
-            tabBarIcon: ({ color, focused }) => {
-              return focused ? (
-                <View style={styles.tabBarIcon}>
-                  {/* <BoardIcon color={color} /> */}
-        {/* <Text style={{ ...styles.tabBarLabel, color: color }}>
-                    Messages
-                  </Text>
-                </View>
-              ) : (
-                <View style={styles.tabBarIcon}>
-                  {/* <BoardIcon color={color} /> */}
-        {/* <Text style={{ ...styles.tabBarLabel, color: color }}>
-                    Messages
-                  </Text>
-                </View>
-              );
-            },
-          }}   */}
-        {/* /> */}
         <Tab.Screen
           name="SettingsScreen"
           component={SettingsScreen}

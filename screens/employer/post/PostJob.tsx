@@ -12,7 +12,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { Avatar, TextInput } from "react-native-paper";
-import { COLORS, SIZES, TYPOGRAPHY } from "../../../theme";
+import { COLORS, LINE, SIZES, TYPOGRAPHY } from "../../../theme";
 import Header from "../../../components/Header";
 import { StackParamList } from "../../../types";
 import Search from "../../../components/Search";
@@ -31,11 +31,11 @@ import {
 } from "firebase/firestore";
 import { auth, firestore, storage } from "../../../firebase";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { Job } from "../../../data/models/Job";
+import { Job, defaultJob } from "../../../data/models/Job";
 import { Loader } from "../../../components/Loader";
 import EmptyDesign from "../../../components/EmptyDesign";
-import { defaultUser } from "../../../data/models/User";
-import { MaterialIcons, Ionicons, Entypo } from "@expo/vector-icons";
+import { User, defaultUser } from "../../../data/models/User";
+import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons";
 import { ActionButton, DefaultButton } from "../../../components/Buttons";
 import { TermsCondition } from "../../../assets/svg/Settings";
 import {
@@ -43,7 +43,7 @@ import {
   FileUploaded,
   Link,
   Mail,
-  User,
+  User as UserIcon,
 } from "../../../assets/svg/Job";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -63,33 +63,50 @@ type Props = {
 interface IValuesProps {
   name: string;
   email: string;
-  country: string;
-  address: string;
-  photo: boolean;
   photoUploaded: boolean;
   loading: boolean;
   file?: string | null;
+  userInfo?: User;
+  jobInfo: Job;
+  typeOpen: boolean;
+  locationTypeOpen: boolean;
 }
 
-const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
+const PostJobScreen: React.FC<Props> = ({ route, navigation }) => {
   const user = auth.currentUser;
   const splitIndex = user?.displayName?.indexOf(" ");
   const [values, setValues] = useState<IValuesProps>({
     name: "",
     email: "",
-    country: "",
-    address: "",
-    photo: false,
     photoUploaded: false,
     loading: false,
     file: null,
-    // application: { ...defaultApplication, job: job },
+    userInfo: { ...defaultUser },
+    jobInfo: defaultJob,
+    typeOpen: false,
+    locationTypeOpen: false,
   });
 
-  const disabled = values.country === "" || values.address === "";
+  const types = {
+    locationType: ["Remote", "Hybrid", "Onsite"],
+    type: ["Full-time", "Part-time", "Contract", "Internship"],
+  };
+
+  const disabled =
+    values.jobInfo.title === "" ||
+    values.jobInfo.pay === "" ||
+    values.jobInfo.location === "" ||
+    values.jobInfo.locationType === "" ||
+    values.jobInfo.type === "";
 
   const reference = doc(firestore, "users", user!.uid);
   const [snapshot, loading, error] = useDocument(reference);
+
+  useEffect(() => {
+    if (snapshot?.exists) {
+      setValues({ ...values, userInfo: snapshot.data() as User });
+    }
+  }, [snapshot]);
 
   const [uploadFile, uploading, imageSnapshot, imageError] = useUploadFile();
   const photoRef = ref(storage, `profileImages/${user!.uid}/profileImage.jpg`);
@@ -225,58 +242,38 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
       <Loader showLoader={false} />
       <View style={styles.innerContainer}>
         <Header
-          title={"Company Profile"}
+          title={"Post a Job"}
           navigation={navigation}
-          showBack={false}
+          // showBack={false}
           showBookmark={false}
           bookmarked={false}
         />
-        <ScrollView style={{ margin: SIZES.md }}>
-          {!values.photoUploaded && (
-            <Text style={{ ...TYPOGRAPHY.h4 }}>Company Logo</Text>
-          )}
-
-          {values.photoUploaded ? (
-            <ImageBackground
-              style={styles.logoBackground}
-              source={{ uri: values.file ?? user?.photoURL ?? "" }}
+        <ScrollView
+          style={{ margin: SIZES.md }}
+          showsVerticalScrollIndicator={false}
+        >
+          <ImageBackground
+            style={styles.logoBackground}
+            source={{ uri: user?.photoURL ?? "" }}
+          >
+            <TouchableOpacity
+              style={styles.btnPickPhoto}
+              activeOpacity={0.5}
+              onPress={pickPhoto}
             >
-              <TouchableOpacity
-                style={styles.btnPickPhoto}
-                activeOpacity={0.5}
-                onPress={pickPhoto}
-              >
-                <MaterialIcons name="edit" color={"#FFF"} size={SIZES.md} />
-              </TouchableOpacity>
-            </ImageBackground>
-          ) : (
-            <View>
-              {!values.file ? (
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  onPress={pickPhoto}
-                  style={styles.uploadResumeContainer}
-                >
-                  <FileUpload />
-                  <Text style={{ ...TYPOGRAPHY.p, marginTop: SIZES.xxs }}>
-                    Browse File
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <View style={styles.uploadResumeContainer}>
-                  <FileUpload />
-                  <Text style={styles.uploading}>Uploading...</Text>
-                </View>
-              )}
-            </View>
-          )}
+              <MaterialIcons name="edit" color={"#FFF"} size={SIZES.md} />
+            </TouchableOpacity>
+          </ImageBackground>
+
+          <View
+            style={{ ...LINE.horizontal, opacity: 0.2, marginBottom: SIZES.md }}
+          />
 
           <Text style={{ ...TYPOGRAPHY.h4 }}>Name of Company</Text>
 
           <TextInput
-            placeholder={"e.g Firstname Lastname"}
             theme={{ roundness: SIZES.xs }}
-            left={<TextInput.Icon icon={() => <User />} />}
+            left={<TextInput.Icon icon={() => <UserIcon />} />}
             style={styles.textInput}
             mode="outlined"
             editable={false}
@@ -303,15 +300,19 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
             editable={false}
           />
 
-          <Text style={{ ...TYPOGRAPHY.h4 }}>Country</Text>
+          <Text style={{ ...TYPOGRAPHY.h4 }}>Open Position</Text>
 
           <TextInput
-            placeholder={"Country where your company is located"}
+            placeholder={"The vacant role "}
             theme={{ roundness: SIZES.xs }}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <Ionicons name="flag" size={SIZES.lg} color={"#ADADAF"} />
+                  <MaterialIcons
+                    name="work"
+                    size={SIZES.lg}
+                    color={"#ADADAF"}
+                  />
                 )}
               />
             }
@@ -322,14 +323,51 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
             activeOutlineColor={COLORS.primary}
             placeholderTextColor={"#ADADAF"}
             selectionColor={COLORS.black}
-            value={values.country}
-            onChangeText={(text) => setValues({ ...values, country: text })}
+            value={values.jobInfo.title}
+            onChangeText={(text) =>
+              setValues({
+                ...values,
+                jobInfo: { ...values.jobInfo, title: text },
+              })
+            }
           />
 
-          <Text style={{ ...TYPOGRAPHY.h4 }}>Address</Text>
+          <Text style={{ ...TYPOGRAPHY.h4 }}>Salary</Text>
 
           <TextInput
-            placeholder={"The address of your company"}
+            placeholder={"Salary range monthly e.g 1500 - 3000"}
+            theme={{ roundness: SIZES.xs }}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <MaterialIcons
+                    name="attach-money"
+                    size={SIZES.lg}
+                    color={"#ADADAF"}
+                  />
+                )}
+              />
+            }
+            style={styles.textInput}
+            mode="outlined"
+            autoCorrect={false}
+            outlineColor={"transparent"}
+            activeOutlineColor={COLORS.primary}
+            placeholderTextColor={"#ADADAF"}
+            selectionColor={COLORS.black}
+            value={values.jobInfo?.pay}
+            onChangeText={(text) =>
+              setValues({
+                ...values,
+                jobInfo: { ...values.jobInfo!, pay: text },
+              })
+            }
+          />
+
+          <Text style={{ ...TYPOGRAPHY.h4 }}>Location</Text>
+
+          <TextInput
+            placeholder={"Location of the vacancy"}
             theme={{ roundness: SIZES.xs }}
             left={
               <TextInput.Icon
@@ -345,26 +383,159 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
             activeOutlineColor={COLORS.primary}
             placeholderTextColor={"#ADADAF"}
             selectionColor={COLORS.black}
-            value={values.address}
-            onChangeText={(text) => setValues({ ...values, address: text })}
+            value={values.jobInfo.location}
+            onChangeText={(text) =>
+              setValues({
+                ...values,
+                jobInfo: { ...values.jobInfo, location: text },
+              })
+            }
           />
+
+          <Text style={{ ...TYPOGRAPHY.h4 }}>Location Type</Text>
+
+          <TextInput
+            placeholder={"Click to select"}
+            theme={{ roundness: SIZES.xs }}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Feather name="type" size={SIZES.lg} color={"#ADADAF"} />
+                )}
+              />
+            }
+            right={
+              <TextInput.Icon
+                onPress={() =>
+                  setValues({
+                    ...values,
+                    locationTypeOpen: !values.locationTypeOpen,
+                  })
+                }
+                icon={() => (
+                  <Ionicons
+                    name={
+                      values.locationTypeOpen ? "chevron-up" : "chevron-down"
+                    }
+                    size={SIZES.lg}
+                    color={"#ADADAF"}
+                  />
+                )}
+              />
+            }
+            style={styles.textInput}
+            mode="outlined"
+            editable={false}
+            autoCorrect={false}
+            outlineColor={"transparent"}
+            activeOutlineColor={COLORS.primary}
+            placeholderTextColor={"#ADADAF"}
+            selectionColor={COLORS.black}
+            value={values.jobInfo.locationType}
+          />
+          {values.locationTypeOpen && (
+            <View style={{ marginBottom: SIZES.md }}>
+              {types.locationType.map((type, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={{
+                    borderBottomWidth: 0.2,
+                    borderBottomColor: "gray",
+                    padding: SIZES.xs,
+                  }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    setValues({
+                      ...values,
+                      locationTypeOpen: false,
+                      jobInfo: { ...values.jobInfo, locationType: type },
+                    });
+                  }}
+                >
+                  <Text style={{ ...TYPOGRAPHY.p }}>{type}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          <Text style={{ ...TYPOGRAPHY.h4 }}>Type</Text>
+
+          <TextInput
+            placeholder={"Click to select"}
+            theme={{ roundness: SIZES.xs }}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Feather name="type" size={SIZES.lg} color={"#ADADAF"} />
+                )}
+              />
+            }
+            right={
+              <TextInput.Icon
+                onPress={() =>
+                  setValues({
+                    ...values,
+                    typeOpen: !values.typeOpen,
+                  })
+                }
+                icon={() => (
+                  <Ionicons
+                    name={values.typeOpen ? "chevron-up" : "chevron-down"}
+                    size={SIZES.lg}
+                    color={"#ADADAF"}
+                  />
+                )}
+              />
+            }
+            style={styles.textInput}
+            mode="outlined"
+            editable={false}
+            outlineColor={"transparent"}
+            activeOutlineColor={COLORS.primary}
+            placeholderTextColor={"#ADADAF"}
+            selectionColor={COLORS.black}
+            value={values.jobInfo?.type}
+          />
+          {values.typeOpen && (
+            <View style={{ marginBottom: SIZES.md }}>
+              {types.type.map((type, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={{
+                    borderBottomWidth: 0.2,
+                    borderBottomColor: "gray",
+                    padding: SIZES.xs,
+                  }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    setValues({
+                      ...values,
+                      typeOpen: false,
+                      jobInfo: { ...values.jobInfo, type: type },
+                    });
+                  }}
+                >
+                  <Text style={{ ...TYPOGRAPHY.p }}>{type}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
 
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => {
-              const map = new Map();
-              map.set("resume", values.file);
-              map.set("country", values.country);
-              map.set("address", values.address);
-              map.set("type", "employer");
-              updateCompanyProfile(user?.uid ?? "", map);
+              navigation?.navigate("JobDescriptionScreen", {
+                job: {
+                  ...values.jobInfo,
+                  company: user?.displayName ?? "",
+                  companyLogo: user?.photoURL,
+                },
+              });
             }}
             disabled={disabled}
             style={{ ...styles.btnContinue, opacity: disabled ? 0.5 : 1 }}
           >
-            <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
-              Submit
-            </Text>
+            <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>Next</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -372,7 +543,7 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-export default CompanyProfileScreen;
+export default PostJobScreen;
 
 const styles = StyleSheet.create({
   innerContainer: {

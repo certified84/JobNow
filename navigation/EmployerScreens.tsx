@@ -3,6 +3,8 @@ import { COLORS, TYPOGRAPHY, SIZES } from "../theme";
 import {
   CompanyProfileScreen,
   EmployerDashboard,
+  JobDescriptionScreen,
+  PostJobScreen,
 } from "../screens";
 
 const Stack = createStackNavigator();
@@ -24,6 +26,21 @@ const EmployerScreens = () => {
         options={{
           headerShown: false,
           gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="PostJobScreen"
+        component={PostJobScreen}
+        options={{
+          headerShown: false,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="JobDescriptionScreen"
+        component={JobDescriptionScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Group>

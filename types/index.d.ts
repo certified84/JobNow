@@ -6,6 +6,7 @@ import { Application, Job } from "../data/models/Job";
 type StackParamList = {
   SignupScreen: {};
   ExpertiseSelectionScreen: {};
+  JobDescriptionScreen: {job: Job};
   
   HomeScreen: {};
   NotificationsScreen

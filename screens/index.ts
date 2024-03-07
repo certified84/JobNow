@@ -24,6 +24,9 @@ import JobApplicationDetailScreen from "./jobseeker/job/JobApplicationDetail";
 import BookmarksScreen from "./jobseeker/job/Bookmarks";
 
 import EmployerDashboard from "./employer/Dashboard";
+import EmployerApplicationsScreen from "./employer/Applications";
+import PostJobScreen from "./employer/post/PostJob";
+import JobDescriptionScreen from "./employer/post/JobDescription";
 
 export {
   OnboardingScreen,
@@ -47,4 +50,7 @@ export {
   EmployerSignupScreen,
   CompanyProfileScreen,
   EmployerDashboard,
+  EmployerApplicationsScreen,
+  PostJobScreen,
+  JobDescriptionScreen,
 };
