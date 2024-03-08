@@ -74,7 +74,6 @@ interface IValuesProps {
 
 const PostJobScreen: React.FC<Props> = ({ route, navigation }) => {
   const user = auth.currentUser;
-  const splitIndex = user?.displayName?.indexOf(" ");
   const [values, setValues] = useState<IValuesProps>({
     name: "",
     email: "",
@@ -529,6 +528,7 @@ const PostJobScreen: React.FC<Props> = ({ route, navigation }) => {
                   ...values.jobInfo,
                   company: user?.displayName ?? "",
                   companyLogo: user?.photoURL,
+                  companyId: user?.uid ?? "",
                 },
               });
             }}

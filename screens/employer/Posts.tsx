@@ -21,6 +21,7 @@ import {
   Firestore,
   collection,
   doc,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -50,9 +51,9 @@ const EmployerPostsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const jobsRef = collection(firestore, "jobs");
   const q = query(
-    jobsRef
+    jobsRef,
     // where("id", "==", "")
-    // orderBy("date", "desc")
+    orderBy("date", "desc")
   );
   const [jobsSnapshot, jobsLoading, jobsError] = useCollection(q);
   const [jobs, setJobs] = useState([]);
@@ -116,7 +117,7 @@ const EmployerPostsScreen: React.FC<Props> = ({ route, navigation }) => {
                 job={item.data()}
                 width={width - SIZES.md * 2}
                 navigation={navigation}
-                bookmarked={true}
+                bookmarked={false}
               />
             )}
             keyExtractor={(item) => item.id}

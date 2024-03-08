@@ -123,11 +123,7 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() =>
-                navigation.navigate("JobsScreen", {
-                  title: "Suggested Jobs",
-                  bookmarked: false,
-                  showBookmark: false,
-                })
+                navigation.navigate("EmployerPostsScreen")
               }
             >
               <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.primary }}>

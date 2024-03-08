@@ -23,7 +23,7 @@ import RequirementsTab from "./tabs/Requirements";
 import RenderTab from "./components/RenderTab";
 import { Briefcase } from "../../../assets/svg/Onboarding";
 import JobDetailComponent from "../../../components/JobDetailComponent";
-import { Job } from "../../../data/models/Job";
+import { Job, defaultJob } from "../../../data/models/Job";
 import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../../../firebase";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
@@ -43,6 +43,7 @@ const JobDescriptionScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
   const user = auth.currentUser;
   const [values, setValues] = useState({
+    loading: false,
     userData: defaultUser,
     bookmarked: route!.params.bookmarked,
     index: 0,
@@ -69,16 +70,50 @@ const JobDescriptionScreen: React.FC<Props> = ({ route, navigation }) => {
     description: () => (
       <DescriptionTab
         descripon={values.job?.description}
-        setDescripon={(text) =>
+        setDescription={(text) =>
           setValues({ ...values, job: { ...values.job, description: text } })
         }
       />
     ),
     requirements: () => <RequirementsTab />,
   });
+
+  const uploadJob = async () => {
+    setValues({ ...values, loading: true });
+    const data: Job = {
+      ...values.job,
+      requirements: [""],
+    };
+
+    const docRef = addDoc(collection(firestore, `jobs`), data);
+    await docRef
+      .then((snapshot) => {
+        updateDoc(snapshot, { id: snapshot.id }).then(() => {
+          setValues({ ...values, loading: false });
+          Toast.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Job uploaded",
+            textBody: "Your vacancy was uploaded successfully",
+          });
+          navigation?.goBack();
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setValues({ ...values, loading: false });
+        console.log(errorCode, errorMessage);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error",
+          textBody: "An error occurred. Please try again",
+        });
+      });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <Loader showLoader={userLoading} />
+      <Loader showLoader={userLoading || values.loading} />
       <View style={styles.innerContainer}>
         <Header
           title={"Post a Job"}
@@ -104,11 +139,11 @@ const JobDescriptionScreen: React.FC<Props> = ({ route, navigation }) => {
 
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => {}}
+          onPress={uploadJob}
           style={styles.btnContinue}
         >
           <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
-            Apply Now
+            Save and Post Job
           </Text>
         </TouchableOpacity>
         {/* </ScrollView> */}
