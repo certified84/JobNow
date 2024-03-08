@@ -171,9 +171,10 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={{alignItems: 'center'}}>
-            {applications.map((application) => (
+          <View style={{ alignItems: "center" }}>
+            {applications.map((application, index) => (
               <ApplicationComponent
+                key={index}
                 application={application.data()}
                 width={width * 0.9}
                 horizontal

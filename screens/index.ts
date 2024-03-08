@@ -27,6 +27,7 @@ import EmployerDashboard from "./employer/Dashboard";
 import EmployerApplicationsScreen from "./employer/Applications";
 import PostJobScreen from "./employer/post/PostJob";
 import JobDescriptionScreen from "./employer/post/JobDescription";
+import ApplicationDetailScreen from "./employer/ApplicationDetail";
 
 export {
   OnboardingScreen,
@@ -53,4 +54,5 @@ export {
   EmployerApplicationsScreen,
   PostJobScreen,
   JobDescriptionScreen,
+  ApplicationDetailScreen,
 };

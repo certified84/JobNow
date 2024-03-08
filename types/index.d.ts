@@ -7,6 +7,11 @@ type StackParamList = {
   SignupScreen: {};
   ExpertiseSelectionScreen: {};
   JobDescriptionScreen: {job: Job};
+
+  ApplicationDetailScreen: {
+    application: Application;
+    title: string;
+  };
   
   HomeScreen: {};
   NotificationsScreen

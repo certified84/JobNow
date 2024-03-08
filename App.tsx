@@ -4,15 +4,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { customFontLocation } from "./constants";
 import NavigationRoutes from "./navigation";
+import { MenuProvider } from "react-native-popup-menu";
 
 export default function App() {
   const [fontsLoaded] = useFonts(customFontLocation);
 
   if (!fontsLoaded) return null;
   return (
-    <NavigationContainer>
-      <NavigationRoutes />
-    </NavigationContainer>
+    <MenuProvider>
+      <NavigationContainer>
+        <NavigationRoutes />
+      </NavigationContainer>
+    </MenuProvider>
   );
 }
 

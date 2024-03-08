@@ -7,7 +7,7 @@ import { Briefcase } from "../assets/svg/Onboarding";
 import { Avatar } from "react-native-paper";
 
 interface JobProps {
-  application?: Application,
+  application?: Application;
   width: number;
   horizontal?: boolean | null;
   navigation: StackNavigation;
@@ -18,18 +18,10 @@ const ApplicationComponent: React.FC<JobProps> = ({
   application,
   width,
   horizontal,
+  navigation,
 }) => {
   return (
     <TouchableOpacity
-      onPress={() =>
-        {}
-        // navigation.navigate("JobDetailScreen", {
-        //   job: job,
-        //   title: job.company,
-        //   bookmarked: bookmarked,
-        //   showBookmark: true,
-        // })
-      }
       disabled={true}
       activeOpacity={0.5}
       style={{
@@ -39,7 +31,6 @@ const ApplicationComponent: React.FC<JobProps> = ({
         backgroundColor: horizontal ? "white" : "#F9F9F9",
       }}
     >
-
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Avatar.Image size={50} source={{ uri: application?.photoUrl }} />
         <View style={{ marginStart: SIZES.xxs }}>
@@ -80,8 +71,13 @@ const ApplicationComponent: React.FC<JobProps> = ({
             borderRadius: 100,
             alignItems: "center",
             borderWidth: 1,
-            borderColor: COLORS.primary
+            borderColor: COLORS.primary,
           }}
+          onPress={() =>
+            navigation.navigate("ApplicationDetailScreen", {
+              application: application,
+            })
+          }
         >
           <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.primary }}>
             View Details
