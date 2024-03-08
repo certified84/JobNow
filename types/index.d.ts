@@ -31,6 +31,7 @@ type StackParamList = {
     title: string;
     bookmarked: boolean;
     showBookmark: boolean;
+    accountType?: string
   };
   JobApplicationScreen: {
     job: Job;

@@ -70,7 +70,7 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
     bookmarked
       ? bookmarks.push(job.id)
       : bookmarks.splice(bookmarks.indexOf(job.id), 1);
-    console.log("Bookmarks: ", bookmarks)
+    console.log("Bookmarks: ", bookmarks);
     await updateDoc(doc(firestore, "users", user!.uid), {
       bookmarks: bookmarks,
     }).catch((error) => {
@@ -91,7 +91,7 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   });
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <Loader showLoader={userLoading}/>
+      <Loader showLoader={userLoading} />
       <View style={styles.innerContainer}>
         <Header
           title={route!.params.title}
@@ -122,22 +122,24 @@ const JobDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           style={{ flex: 1, height: "auto" }}
         />
 
-        <TouchableOpacity
-          activeOpacity={0.5}
-          onPress={() => {
-            navigation?.navigate("JobApplicationScreen", {
-              job: job,
-              title: "Apply to Job",
-              showBookmark: false,
-              bookmarked: false,
-            });
-          }}
-          style={styles.btnContinue}
-        >
-          <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
-            Apply Now
-          </Text>
-        </TouchableOpacity>
+        {!route?.params.accountType && (
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => {
+              navigation?.navigate("JobApplicationScreen", {
+                job: job,
+                title: "Apply to Job",
+                showBookmark: false,
+                bookmarked: false,
+              });
+            }}
+            style={styles.btnContinue}
+          >
+            <Text style={{ ...TYPOGRAPHY.h4, color: COLORS.white }}>
+              Apply Now
+            </Text>
+          </TouchableOpacity>
+        )}
         {/* </ScrollView> */}
       </View>
     </SafeAreaView>

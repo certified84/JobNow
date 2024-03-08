@@ -18,7 +18,6 @@ const VacancyComponent: React.FC<JobProps> = ({
   width,
   horizontal,
   navigation,
-  bookmarked,
 }) => {
   return (
     <TouchableOpacity
@@ -26,8 +25,9 @@ const VacancyComponent: React.FC<JobProps> = ({
         navigation.navigate("JobDetailScreen", {
           job: job,
           title: job.company,
-          bookmarked: bookmarked,
-          showBookmark: true,
+          bookmarked: false,
+          showBookmark: false,
+          accountType: "employer",
         })
       }
       activeOpacity={0.5}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#CACACA",
     padding: SIZES.sm,
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   companyLogoContainer: {
     padding: SIZES.xs,
