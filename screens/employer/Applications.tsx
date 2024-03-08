@@ -28,6 +28,7 @@ import { Job } from "../../data/models/Job";
 import { Loader } from "../../components/Loader";
 import EmptyDesign from "../../components/EmptyDesign";
 import { defaultUser } from "../../data/models/User";
+import ApplicationComponent from "../../components/Application";
 
 type ScreenRouteProp = RouteProp<StackParamList, "BookmarksScreen">;
 type NavProp = NavigationProp<StackParamList, "BookmarksScreen">;
@@ -64,21 +65,7 @@ const EmployerApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   useEffect(() => {
     if (jobsSnapshot) {
-      const data = [];
-      jobsSnapshot.docs.forEach((item) => {
-        console.log(item.data());
-        data.push(
-          item.data().applications.fillter((job) => {
-            console.log(job);
-            job.companyId === userData.uid;
-          })
-        );
-      });
-
-      // const data = jobsSnapshot.docs.filter((item) =>
-      //   userData.bookmarks?.includes(item.data().id)
-      // );
-      console.log(jobsSnapshot.docs.length);
+      const data = jobsSnapshot.docs
       setJobs(data);
     }
   }, [jobsSnapshot, userSnapshot, userData]);
@@ -116,11 +103,11 @@ const EmployerApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent
-                job={item.data()}
-                width={width - SIZES.md * 2}
+              <ApplicationComponent
+                application={item.data()}
+                width={width * 0.9}
+                horizontal
                 navigation={navigation}
-                bookmarked={true}
               />
             )}
             keyExtractor={(item) => item.id}

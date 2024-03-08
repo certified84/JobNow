@@ -95,6 +95,7 @@ const EmployerSignupScreen: React.FC<Props> = ({ route, navigation }) => {
       uid: user.uid,
       name: value.name,
       email: value.email.toLowerCase(),
+      type: "employer"
     };
     await setDoc(doc(firestore, "users", user.uid), data)
       .then(() => {

@@ -36,7 +36,7 @@ const JobApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const [application, setApplication] = useState(route?.params.application!);
   const applicationRef = doc(
     firestore,
-    `applications/${user?.uid}/applications`,
+    `applications`,
     application.id
   );
   const [snapshot, loading, error] = useDocument(applicationRef);

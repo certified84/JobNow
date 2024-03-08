@@ -356,7 +356,7 @@ const CompanyProfileScreen: React.FC<Props> = ({ route, navigation }) => {
               map.set("resume", values.file);
               map.set("country", values.country);
               map.set("address", values.address);
-              map.set("type", "employer");
+              map.set("type", "verified");
               updateCompanyProfile(user?.uid ?? "", map);
             }}
             disabled={disabled}

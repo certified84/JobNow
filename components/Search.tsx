@@ -2,7 +2,7 @@ import { TextInput } from "react-native-paper";
 import { SIZES, COLORS, TYPOGRAPHY } from "../theme";
 import { Filter } from "../assets/svg/Home";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
 interface SearchProps {
   text: string;
@@ -10,7 +10,8 @@ interface SearchProps {
   placeHolder: string;
   borderColor?: string | null;
   activeBorderColor?: string | null;
-  style?: {} | null
+  selectionColor?: string | null;
+  style?: ViewStyle | null
 }
 
 const Search: React.FC<SearchProps> = ({
@@ -19,6 +20,7 @@ const Search: React.FC<SearchProps> = ({
   placeHolder,
   borderColor,
   activeBorderColor,
+  selectionColor,
   style
 }) => (
   <TextInput
@@ -47,7 +49,7 @@ const Search: React.FC<SearchProps> = ({
     outlineColor={borderColor ?? "transparent"}
     activeOutlineColor={activeBorderColor ?? "transparent"}
     placeholderTextColor={"#ADADAF"}
-    selectionColor={COLORS.black}
+    selectionColor={selectionColor ?? COLORS.black}
     value={text}
     onChangeText={onChangeText}
   />

@@ -37,10 +37,7 @@ const JobApplicationsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width } = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
   const user = auth.currentUser;
-  const jobsRef = collection(
-    firestore,
-    `applications/${user?.uid}/applications`
-  );
+  const jobsRef = collection(firestore, `applications`);
   const q = query(
     jobsRef
     // where("communityId", "==", "")

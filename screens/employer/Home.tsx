@@ -21,9 +21,12 @@ import { useEffect, useState } from "react";
 import JobComponent from "../../components/JobComponent";
 import { auth, firestore } from "../../firebase";
 import SplashIcon from "../../assets/svg/SplashIcon";
-import { collection, doc, query } from "firebase/firestore";
+import { collection, doc, query, where } from "firebase/firestore";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { defaultUser } from "../../data/models/User";
+import VacancyComponent from "../../components/VacancyComponent";
+import ApplicationComponent from "../../components/Application";
+import { Application } from "../../data/models/Job";
 
 const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
   const { width, height } = useWindowDimensions();
@@ -42,7 +45,7 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const jobsRef = collection(firestore, "jobs");
   const q = query(
-    jobsRef,
+    jobsRef
     // where("communityId", "==", "")
     // orderBy("date", "desc")
   );
@@ -52,10 +55,26 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     if (jobsSnapshot) {
       const data = jobsSnapshot.docs;
-      console.log("Jobs", data)
       setJobs(data);
     }
   }, [jobsSnapshot]);
+
+  const applicationsRef = collection(firestore, "applications");
+  const applicationQuery = query(
+    applicationsRef,
+    where("job.companyId", "==", user.uid)
+    // orderBy("date", "desc")
+  );
+  const [applicationsSnapshot, applicatinsLoading, applicationsError] =
+    useCollection(applicationQuery);
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    if (applicationsSnapshot) {
+      const data = applicationsSnapshot.docs;
+      setApplications(data);
+    }
+  }, [applicationsSnapshot]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -88,28 +107,19 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.line} />
 
         <ScrollView>
-          <ImageBackground
-            source={require("../../assets/images/home_card_background.png")}
-            style={styles.imageContainer}
-          >
-            <Text
-              style={{
-                ...TYPOGRAPHY.h1,
-                color: COLORS.white,
-              }}
-            >
-              Find your dream job with us, on JobNow.
-            </Text>
-
-            <Search
-              text={searchText}
-              onChangeText={setSearchText}
-              placeHolder="Search for a job or skill..."
-            />
-          </ImageBackground>
+          <Search
+            text={searchText}
+            onChangeText={setSearchText}
+            placeHolder="Search for a job or skill..."
+            style={{
+              marginTop: 0,
+              backgroundColor: "#F0F0F0",
+              marginHorizontal: SIZES.sm,
+            }}
+          />
 
           <View style={styles.moreContainer}>
-            <Text style={{ ...TYPOGRAPHY.h3 }}>Suggested Jobs</Text>
+            <Text style={{ ...TYPOGRAPHY.h3 }}>My Vacanacies</Text>
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() =>
@@ -132,7 +142,7 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             data={jobs}
             style={{ marginHorizontal: SIZES.md }}
             renderItem={({ item, index }) => (
-              <JobComponent
+              <VacancyComponent
                 job={item.data()}
                 width={width * 0.7}
                 horizontal
@@ -143,8 +153,8 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             keyExtractor={(item) => item.id}
           />
 
-          <View style={styles.moreContainer}>
-            <Text style={{ ...TYPOGRAPHY.h3 }}>Top Jobs</Text>
+          <View style={{ ...styles.moreContainer, marginBottom: 0 }}>
+            <Text style={{ ...TYPOGRAPHY.h3 }}>Recent Applications</Text>
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() =>
@@ -161,22 +171,31 @@ const EmployerHomeScreen: React.FC<Props> = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
+          <View style={{alignItems: 'center'}}>
+            {applications.map((application) => (
+              <ApplicationComponent
+                application={application.data()}
+                width={width * 0.9}
+                horizontal
+                navigation={navigation}
+              />
+            ))}
+          </View>
+
+          {/* <FlatList
             data={jobs}
-            style={{ marginHorizontal: SIZES.md }}
+            contentContainerStyle={{ alignItems: "center" }}
             renderItem={({ item, index }) => (
-              <JobComponent
+              <ApplicationComponent
                 job={item.data()}
-                width={width * 0.7}
+                width={width * 0.9}
                 horizontal
                 navigation={navigation}
                 bookmarked={userData.bookmarks?.includes(item.data().id)}
               />
             )}
             keyExtractor={(item) => item.id}
-          />
+          /> */}
           <View style={{ height: 90 }} />
         </ScrollView>
       </View>

@@ -75,6 +75,8 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const disabled = values.porfolioLink.length <= 0;
 
+  useEffect(() => console.log(job.companyId), [])
+
   useEffect(() => {
     if (values.resume) {
       setTimeout(() => {
@@ -170,12 +172,11 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
       porfolioLink: values.porfolioLink,
       coverLetter: values.coverLetter,
       uid: user?.uid,
+      name: user?.displayName,
+      photoUrl: user?.photoURL
     };
 
-    const docRef = addDoc(
-      collection(firestore, `applications/${user?.uid}/applications`),
-      data
-    );
+    const docRef = addDoc(collection(firestore, `applications`), data);
     await docRef
       .then((snapshot) => {
         updateDoc(snapshot, { id: snapshot.id }).then(() =>
@@ -196,11 +197,7 @@ const JobApplicationScreen: React.FC<Props> = ({ route, navigation }) => {
   }
 
   async function updateApplication(url: string, id: string) {
-    const applicationRef = doc(
-      firestore,
-      `applications/${user?.uid}/applications`,
-      id
-    );
+    const applicationRef = doc(firestore, `applications`, id);
     await updateDoc(applicationRef, { resume: url })
       .then(() => {
         setValues({ ...values, loading: false });

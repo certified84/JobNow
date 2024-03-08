@@ -145,10 +145,10 @@ const LoginScreen: React.FC<Props> = ({ route, navigation }) => {
         if (snapshot.exists()) {
           const userData = snapshot.data() as User;
           console.log(userData);
-          if (userData.type !== null) {
-            if (userData.type === "employer")
-              navigation.navigate("EmployerDashboard");
-            else navigation.navigate("CompanyProfileScreen");
+          if (userData.type === "verified") {
+            navigation.navigate("EmployerDashboard");
+          } else if (userData.type === "employer") {
+            navigation.navigate("CompanyProfileScreen");
           } else if (userData.skills.length <= 0) {
             navigation.navigate("ExpertiseSelectionScreen");
           } else {
