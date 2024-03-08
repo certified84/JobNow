@@ -1,10 +1,18 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { COLORS, SIZES, TYPOGRAPHY } from "../theme";
 import { Application, Job } from "../data/models/Job";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackNavigation } from "../types";
 import { Briefcase } from "../assets/svg/Onboarding";
 import { Avatar } from "react-native-paper";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 interface JobProps {
   application?: Application;
@@ -20,6 +28,25 @@ const ApplicationComponent: React.FC<JobProps> = ({
   horizontal,
   navigation,
 }) => {
+  const handlePress = async () => {
+    const supported = await Linking.canOpenURL(application?.resume ?? "");
+    if (supported) {
+      await Linking.openURL(application?.resume ?? "");
+    } else {
+      Toast.show({
+        title: "An error occurred",
+        textBody: "An error occurred opening the resume",
+        titleStyle: { ...TYPOGRAPHY.h5 },
+        textBodyStyle: { ...TYPOGRAPHY.p },
+        type: ALERT_TYPE.DANGER,
+      });
+    }
+    // () =>
+    //   navigation?.navigate("ResumeDetailScreen", {
+    //     resume: application?.resume,
+    //   });
+  };
+
   return (
     <TouchableOpacity
       disabled={true}
@@ -57,6 +84,7 @@ const ApplicationComponent: React.FC<JobProps> = ({
             borderRadius: 100,
             alignItems: "center",
           }}
+          onPress={handlePress}
         >
           <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.white }}>
             View Resume

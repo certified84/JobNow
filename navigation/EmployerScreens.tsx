@@ -6,6 +6,7 @@ import {
   EmployerDashboard,
   JobDescriptionScreen,
   PostJobScreen,
+  ResumeDetailScreen,
 } from "../screens";
 
 const Stack = createStackNavigator();
@@ -47,6 +48,13 @@ const EmployerScreens = () => {
       <Stack.Screen
         name="ApplicationDetailScreen"
         component={ApplicationDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ResumeDetailScreen"
+        component={ResumeDetailScreen}
         options={{
           headerShown: false,
         }}

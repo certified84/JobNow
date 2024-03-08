@@ -6,17 +6,18 @@ import { Application, Job } from "../data/models/Job";
 type StackParamList = {
   SignupScreen: {};
   ExpertiseSelectionScreen: {};
-  JobDescriptionScreen: {job: Job};
+  JobDescriptionScreen: { job: Job };
+  ResumeDetailScreen: { resume: string };
 
   ApplicationDetailScreen: {
     application: Application;
     title: string;
   };
-  
+
   HomeScreen: {};
-  NotificationsScreen
-  ProfileScreen
-  FAQScreen
+  NotificationsScreen;
+  ProfileScreen;
+  FAQScreen;
   JobsScreen: {
     title: string;
     bookmarked: boolean;
@@ -24,14 +25,13 @@ type StackParamList = {
     showBack: boolean;
     which?: string;
   };
-  BookmarksScreen: {
-  };
+  BookmarksScreen: {};
   JobDetailScreen: {
     job: Job;
     title: string;
     bookmarked: boolean;
     showBookmark: boolean;
-    accountType?: string
+    accountType?: string;
   };
   JobApplicationScreen: {
     job: Job;
@@ -48,7 +48,7 @@ type StackParamList = {
     title: string;
   };
   SettingsScreen: {};
-  ProfileScreen: {}
+  ProfileScreen: {};
   LoginScreen;
 };
 

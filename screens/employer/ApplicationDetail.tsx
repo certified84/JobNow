@@ -7,6 +7,7 @@ import {
   View,
   useWindowDimensions,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { COLORS, SIZES, TYPOGRAPHY } from "../../theme";
 import Header from "../../components/Header";
@@ -77,7 +78,7 @@ const ApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 
   async function updateApplication() {
-    setValues({...values, loading: true})
+    setValues({ ...values, loading: true });
     const applicationRef = doc(firestore, `applications`, application.id);
     await updateDoc(applicationRef, {
       status: values.status,
@@ -106,9 +107,28 @@ const ApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
       });
   }
 
+  const handlePress = async () => {
+    const supported = await Linking.canOpenURL(application.resume);
+    if (supported) {
+      await Linking.openURL(application.resume);
+    } else {
+      Toast.show({
+        title: "An error occurred",
+        textBody: "An error occurred opening the resume",
+        titleStyle: { ...TYPOGRAPHY.h5 },
+        textBodyStyle: { ...TYPOGRAPHY.p },
+        type: ALERT_TYPE.DANGER,
+      });
+    }
+    // () =>
+    //   navigation?.navigate("ResumeDetailScreen", {
+    //     resume: application?.resume,
+    //   });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <Loader showLoader={values.loading}/>
+      <Loader showLoader={values.loading} />
       <View style={styles.innerContainer}>
         <Header
           title={"Application Details"}
@@ -137,6 +157,7 @@ const ApplicationDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                 borderRadius: 100,
                 alignItems: "center",
               }}
+              onPress={handlePress}
             >
               <Text style={{ ...TYPOGRAPHY.h5, color: COLORS.white }}>
                 See Resume
