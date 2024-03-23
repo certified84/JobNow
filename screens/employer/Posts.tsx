@@ -118,6 +118,7 @@ const EmployerPostsScreen: React.FC<Props> = ({ route, navigation }) => {
                 width={width - SIZES.md * 2}
                 navigation={navigation}
                 bookmarked={false}
+                showBookmark={false}
               />
             )}
             keyExtractor={(item) => item.id}

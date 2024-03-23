@@ -11,6 +11,7 @@ interface JobProps {
   horizontal?: boolean | null;
   navigation: StackNavigation;
   bookmarked?: boolean;
+  showBookmark?: boolean;
 }
 
 const JobComponent: React.FC<JobProps> = ({
@@ -19,6 +20,7 @@ const JobComponent: React.FC<JobProps> = ({
   horizontal,
   navigation,
   bookmarked,
+  showBookmark = true,
 }) => {
   return (
     <TouchableOpacity
@@ -27,7 +29,7 @@ const JobComponent: React.FC<JobProps> = ({
           job: job,
           title: job.company,
           bookmarked: bookmarked,
-          showBookmark: true,
+          showBookmark: showBookmark,accountType: !showBookmark ? "employer" : "",
         })
       }
       activeOpacity={0.5}
@@ -51,11 +53,13 @@ const JobComponent: React.FC<JobProps> = ({
         </View>
 
         {/* <TouchableOpacity activeOpacity={0.5} style={{ padding: 4 }}> */}
-        <MaterialCommunityIcons
-          name={bookmarked ? "bookmark" : "bookmark-outline"}
-          size={30}
-          color={COLORS.primary}
-        />
+        {showBookmark && (
+          <MaterialCommunityIcons
+            name={bookmarked ? "bookmark" : "bookmark-outline"}
+            size={30}
+            color={COLORS.primary}
+          />
+        )}
         {/* </TouchableOpacity> */}
       </View>
 

@@ -50,18 +50,25 @@ const RequirementsTab: React.FC<RequirementsTabProps> = ({}) => {
             size={SIZES.lg}
             color={COLORS.primary}
             style={{ marginTop: SIZES.xs }}
+            onPress={() => {
+              setRequirements({ ...requirements });
+            }}
           />
           <TextInput
             placeholder=""
             theme={{ roundness: SIZES.xs }}
-            style={{ flex: 1, backgroundColor: COLORS.white }}
+            style={{ flex: 1, backgroundColor: COLORS.white, height: 45 }}
             mode="outlined"
             outlineColor="transparent"
             activeOutlineColor={"transparent"}
             selectionColor="#555555"
+            editable={item.editable}
             // textColor={"#555555"}
-            // value={text}
-            // onChangeText={setText}
+            value={item.text}
+            onChangeText={(text) => {
+              let requirement0 = item
+              requirement0.text = text
+            }}
           />
         </View>
       ))}
@@ -81,7 +88,7 @@ const RequirementsTab: React.FC<RequirementsTabProps> = ({}) => {
           let newRequirements = requirements;
           newRequirements.push({ text: "", editable: true });
           setRequirements(newRequirements);
-          console.log(newRequirements.length)
+          console.log(newRequirements.length);
         }}
       >
         <Ionicons name="add-circle" size={SIZES.xl} color={COLORS.primary} />
