@@ -125,7 +125,7 @@ const ProfileScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [snapshot]);
 
-  useEffect(() => console.log(values.loading), [values.loading])
+  useEffect(() => console.log(values.loading), [values.loading]);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -272,7 +272,10 @@ const ProfileScreen: React.FC<Props> = ({ route, navigation }) => {
               {values.image ? (
                 <Avatar.Image size={100} source={{ uri: values.image }} />
               ) : (
-                <Avatar.Image size={100} source={{ uri: user!.photoURL }} />
+                <Avatar.Image
+                  size={100}
+                  source={{ uri: user?.photoURL ?? "" }}
+                />
               )}
             </View>
           ) : (

@@ -48,9 +48,7 @@ const Icon: React.FC<IconProps> = ({ which }) => {
     notifications: () => (
       <MaterialIcons name="notifications" size={24} color={COLORS.primary} />
     ),
-    faqs: () => (
-      <MaterialIcons name="help" size={24} color={COLORS.primary} />
-    ),
+    faqs: () => <MaterialIcons name="help" size={24} color={COLORS.primary} />,
   };
   const CurrentIcon = Icons[which];
   return <CurrentIcon />;
@@ -60,17 +58,17 @@ const data: any[] = [
   {
     title: "Profile",
     subtitle: "Edit your profile",
-    which: "profile"
+    which: "profile",
   },
   {
     title: "Notifications",
     subtitle: "Notifications settings",
-    which: "notifications"
+    which: "notifications",
   },
   {
     title: "FAQs & Support",
     subtitle: "Get support and send feedback",
-    which: "faqs"
+    which: "faqs",
   },
 ];
 
@@ -83,7 +81,7 @@ type Props = {
 };
 
 const SettingsScreen: React.FC<Props> = ({ route, navigation }) => {
-  const action = ({ which }: {which: IconKeys}) => {
+  const action = ({ which }: { which: IconKeys }) => {
     switch (which) {
       case "profile":
         navigation?.navigate("ProfileScreen");
@@ -110,7 +108,7 @@ const SettingsScreen: React.FC<Props> = ({ route, navigation }) => {
         {data.map((item, index) => (
           <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() =>action({which: item.which})}
+            onPress={() => action({ which: item.which })}
             key={index}
             style={styles.itemContainer}
           >
